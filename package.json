@@ -1,0 +1,23 @@
+{
+  "name": "@leofcoin/standards",
+  "version": "0.1.0",
+  "description": "Contract standards",
+  "exports": {
+    "token": "./exports/token.js",
+    "roles": "./exports/roles.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ArteonToken/standards.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ArteonToken/standards/issues"
+  },
+  "homepage": "https://github.com/ArteonToken/standards#readme"
+}
