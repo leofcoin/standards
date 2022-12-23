@@ -1,6 +1,6 @@
 {
   "name": "@leofcoin/standards",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Contract standards",
   "exports": {
     "token": "./exports/token.js",
