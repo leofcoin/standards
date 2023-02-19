@@ -2,11 +2,21 @@
   "name": "@leofcoin/standards",
   "version": "0.1.1",
   "description": "Contract standards",
+  "type": "module",
   "exports": {
-    "token": "./exports/token.js",
-    "roles": "./exports/roles.js"
+    "./token": {
+      "import": "./exports/token.js",
+      "types": "./exports/token.d.ts"
+    },
+    "./roles": {
+      "import": "./exports/roles.js",
+      "types": "./exports/roles.d.ts"
+    },
+    "./token.js": "./exports/token.js",
+    "./roles.js": "./exports/roles.js"
   },
   "scripts": {
+    "build": "rollup -c",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -19,5 +29,14 @@
   "bugs": {
     "url": "https://github.com/ArteonToken/standards/issues"
   },
-  "homepage": "https://github.com/ArteonToken/standards#readme"
+  "homepage": "https://github.com/ArteonToken/standards#readme",
+  "devDependencies": {
+    "@leofcoin/global-types": "^1.0.0",
+    "@rollup/plugin-typescript": "^11.0.0",
+    "rollup": "^3.17.1",
+    "tslib": "^2.5.0"
+  },
+  "dependencies": {
+    "@ethersproject/bignumber": "^5.7.0"
+  }
 }

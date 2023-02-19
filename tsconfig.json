@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "module": "es2022",
+    "target": "es2022",
+    "outDir": "./exports",
+    "moduleResolution":"NodeNext",
+    "allowJs": true,
+    "allowSyntheticDefaultImports": true,    
+    "resolveJsonModule": true,
+    "declaration": true,
+    "declarationDir": "./exports"
+  },
+  "include": [
+    "./src/*",
+    "./node_modules/@leofcoin/global-types/*"
+  ]
+}
