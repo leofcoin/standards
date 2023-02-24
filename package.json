@@ -4,6 +4,10 @@
   "description": "Contract standards",
   "type": "module",
   "exports": {
+    ".": {
+      "import": "./exports/index.js",
+      "types": "./exports/index.d.ts"
+    },
     "./token": {
       "import": "./exports/token.js",
       "types": "./exports/token.d.ts"

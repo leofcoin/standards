@@ -12,7 +12,7 @@ const clean = () => {
 }
 
 export default [{
-  input: ['src/token.ts', 'src/roles.ts'],
+  input: ['src/index.ts', 'src/token.ts', 'src/roles.ts'],
   output: {
     dir: './exports',
     format: 'es'
