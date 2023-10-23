@@ -8,15 +8,15 @@ export default class Token extends Roles {
      * @return {Object} {holders, balances, ...}
      */
     get state(): {};
-    get totalSupply(): any;
+    get totalSupply(): BigNumberish;
     get name(): string;
     get symbol(): string;
-    get holders(): number;
+    get holders(): {};
     get balances(): {};
-    mint(to: any, amount: any): void;
-    burn(from: address, amount: BigNumber): void;
-    balanceOf(address: address): BigNumber;
-    setApproval(operator: address, amount: BigNumber): void;
-    approved(owner: address, operator: address, amount: BigNumber): boolean;
-    transfer(from: address, to: address, amount: BigNumber): void;
+    mint(to: address, amount: BigNumberish): void;
+    burn(from: address, amount: BigNumberish): void;
+    balanceOf(address: address): BigNumberish;
+    setApproval(operator: address, amount: BigNumberish): void;
+    approved(owner: address, operator: address, amount: BigNumberish): boolean;
+    transfer(from: address, to: address, amount: BigNumberish): void;
 }
