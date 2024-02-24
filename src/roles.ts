@@ -1,13 +1,12 @@
 export default class Roles {
-
   /**
    * Object => Array
    */
   #roles = {
-    'OWNER': [],
-    'MINT': [],
-    'BURN': []
-  };
+    OWNER: [],
+    MINT: [],
+    BURN: []
+  }
 
   constructor(roles: {}) {
     // allow devs to set their own roles but always keep the default ones included
@@ -16,9 +15,9 @@ export default class Roles {
     // because no roles are granted by default when using custom roles
     if (roles) {
       if (roles instanceof Object) {
-       this.#roles = {...roles, ...this.#roles}
+        this.#roles = { ...roles, ...this.#roles }
       } else {
-       throw new TypeError(`expected roles to be an object`)
+        throw new TypeError(`expected roles to be an object`)
       }
     } else {
       // no roles given so fallback to default to the msg sender
@@ -34,11 +33,11 @@ export default class Roles {
   }
 
   get roles(): {} {
-    return {...this.#roles}
+    return { ...this.#roles }
   }
   /**
-   * @param {address} address 
-   * @param {string} role 
+   * @param {address} address
+   * @param {string} role
    * @returns true | false
    */
   hasRole(address: address, role: string): boolean {
