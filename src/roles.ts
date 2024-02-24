@@ -8,7 +8,7 @@ export default class Roles {
     BURN: []
   }
 
-  constructor(roles: {}) {
+  constructor(roles: { [index: string]: address[] }) {
     // allow devs to set their own roles but always keep the default ones included
     // also allows roles to be loaded from the stateStore
     // carefull when including the roles make sure to add the owner

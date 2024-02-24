@@ -1,6 +1,8 @@
 export default class Roles {
     #private;
-    constructor(roles: {});
+    constructor(roles: {
+        [index: string]: address[];
+    });
     /**
      *
      */

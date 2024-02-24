@@ -1,41 +1,56 @@
 import Roles from './roles.js'
 
+export declare type TokenState = {
+  roles: { [index: string]: address[] }
+  holders: number
+  balances: { [index: string]: BigNumberish }
+  approvals: {}
+  totalSupply: BigNumberish
+}
+
 export default class Token extends Roles {
   /**
    * string
    */
-  #name: string;
+  #name: string
   /**
    * String
    */
-  #symbol: string;
+  #symbol: string
   /**
    * uint
    */
-  #holders = 0;
+  #holders: typeof BigNumber = BigNumber['from'](0)
   /**
    * Object => Object => uint
    */
-  #balances = {};
+  #balances = {}
   /**
    * Object => Object => uint
    */
-  #approvals = {};
+  #approvals = {}
 
-  #decimals = 18;
+  #decimals = 18
 
-  #totalSupply = BigNumber.from(0);
+  #totalSupply = BigNumber['from'](0)
 
-    // this.#privateField2 = 1
-  constructor(name: string, symbol: string, decimals: number = 18, state: {roles?: {}}) {
+  // this.#privateField2 = 1
+  constructor(name: string, symbol: string, decimals: number = 18, state?: TokenState) {
     if (!name) throw new Error(`name undefined`)
     if (!symbol) throw new Error(`symbol undefined`)
 
     super(state?.roles)
 
-    this.#name = name
-    this.#symbol = symbol
-    this.#decimals = decimals
+    if (state) {
+      this.#holders = BigNumber['from'](state.holders)
+      this.#balances = state.balances
+      this.#approvals = state.approvals
+      this.#totalSupply = state.totalSupply
+    } else {
+      this.#name = name
+      this.#symbol = symbol
+      this.#decimals = decimals
+    }
   }
 
   // enables snapshotting
@@ -71,7 +86,11 @@ export default class Token extends Roles {
   }
 
   get balances(): {} {
-    return {...this.#balances}
+    return { ...this.#balances }
+  }
+
+  get decimals() {
+    return this.#decimals
   }
 
   mint(to: address, amount: BigNumberish) {
@@ -93,12 +112,13 @@ export default class Token extends Roles {
   }
 
   #updateHolders(address: address, previousBalance: typeof BigNumber) {
-    if (this.#balances[address].toHexString() === '0x00') this.#holders -= 1
-    else if (this.#balances[address].toHexString() !== '0x00' && previousBalance.toHexString() === '0x00') this.#holders += 1
+    if (this.#balances[address].toHexString() === '0x00') this.#holders.sub(1)
+    else if (this.#balances[address].toHexString() !== '0x00' && previousBalance.toHexString() === '0x00')
+      this.#holders.add(1)
   }
 
   #increaseBalance(address: address, amount: BigNumberish) {
-    if (!this.#balances[address]) this.#balances[address] = BigNumber.from(0)
+    if (!this.#balances[address]) this.#balances[address] = BigNumber['from'](0)
     const previousBalance = this.#balances[address]
 
     this.#balances[address] = this.#balances[address].add(amount)
@@ -127,7 +147,7 @@ export default class Token extends Roles {
 
   transfer(from: address, to: address, amount: BigNumberish) {
     // TODO: is BigNumber?
-    amount = BigNumber.from(amount)
+    amount = BigNumber['from'](amount)
     this.#beforeTransfer(from, to, amount)
     this.#decreaseBalance(from, amount)
     this.#increaseBalance(to, amount)
