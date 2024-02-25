@@ -43,9 +43,9 @@ export default class Token extends Roles {
 
     if (state) {
       this.#holders = BigNumber['from'](state.holders)
-      this.#balances = state.balances
-      this.#approvals = state.approvals
-      this.#totalSupply = state.totalSupply
+      this.#balances = BigNumber['from'](state.balances)
+      this.#approvals = BigNumber['from'](state.approvals)
+      this.#totalSupply = BigNumber['from'](state.totalSupply)
     } else {
       this.#name = name
       this.#symbol = symbol
