@@ -1,9 +1,6 @@
 import typescript from '@rollup/plugin-typescript'
-import tsConfig from './tsconfig.json' assert { type: 'json'}
+import tsConfig from './tsconfig.json' assert { type: 'json' }
 import { execSync } from 'child_process'
-
-
-
 
 // const templates = (await readdir('./src/templates')).map(path => join('./src/templates', path))
 const clean = () => {
@@ -11,13 +8,13 @@ const clean = () => {
   return
 }
 
-export default [{
-  input: ['src/index.ts', 'src/token.ts', 'src/roles.ts'],
-  output: {
-    dir: './exports',
-    format: 'es'
-  },
-  plugins: [
-    typescript(tsConfig)
-  ]
-}]
+export default [
+  {
+    input: ['src/index.ts', 'src/token.ts', 'src/roles.ts', 'src/voting.ts', 'src/helpers.ts'],
+    output: {
+      dir: './exports',
+      format: 'es'
+    },
+    plugins: [typescript(tsConfig)]
+  }
+]

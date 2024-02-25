@@ -16,8 +16,18 @@
       "import": "./exports/roles.js",
       "types": "./exports/roles.d.ts"
     },
+    "./voting": {
+      "import": "./exports/voting.js",
+      "types": "./exports/voting.d.ts"
+    },
+    "./helpers": {
+      "import": "./exports/helpers.js",
+      "types": "./exports/helpers.d.ts"
+    },
     "./token.js": "./exports/token.js",
-    "./roles.js": "./exports/roles.js"
+    "./roles.js": "./exports/roles.js",
+    "./voting.js": "./exports/voting.js",
+    "./helpers.js": "./exports/helpers.js"
   },
   "scripts": {
     "build": "rollup -c",
