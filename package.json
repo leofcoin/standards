@@ -1,6 +1,6 @@
 {
   "name": "@leofcoin/standards",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "Contract standards",
   "type": "module",
   "exports": {
