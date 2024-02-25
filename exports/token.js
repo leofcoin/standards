@@ -1,5 +1,24 @@
 import Roles from './roles.js';
 
+// when state is stored it get encoded as a string to  so we need to reformat balances back to BigNumbers
+const restoreBalances = (balances) => {
+    const _balances = {};
+    for (const address in balances) {
+        _balances[address] = BigNumber['from'](balances[address]);
+    }
+    return _balances;
+};
+const restoreApprovals = (approvals) => {
+    const _approvals = {};
+    for (const owner in approvals) {
+        _approvals[owner] = {};
+        for (const operator in approvals[owner]) {
+            _approvals[owner][operator] = BigNumber['from'](approvals[owner][operator]);
+        }
+    }
+    return _approvals;
+};
+
 class Token extends Roles {
     /**
      * string
@@ -31,9 +50,9 @@ class Token extends Roles {
             throw new Error(`symbol undefined`);
         super(state?.roles);
         if (state) {
+            this.#balances = restoreBalances(state.balances);
+            this.#approvals = restoreApprovals(state.approvals);
             this.#holders = BigNumber['from'](state.holders);
-            this.#balances = BigNumber['from'](state.balances);
-            this.#approvals = BigNumber['from'](state.approvals);
             this.#totalSupply = BigNumber['from'](state.totalSupply);
         }
         else {
@@ -116,7 +135,7 @@ class Token extends Roles {
         const owner = msg.sender;
         if (!this.#approvals[owner])
             this.#approvals[owner] = {};
-        this.#approvals[owner][operator] = amount;
+        this.#approvals[owner][operator] = BigNumber['from'](amount);
     }
     approved(owner, operator, amount) {
         return this.#approvals[owner][operator] === amount;

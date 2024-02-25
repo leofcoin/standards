@@ -1,10 +1,11 @@
+import { restoreApprovals, restoreBalances } from './helpers.js'
 import Roles from './roles.js'
 
 export declare type TokenState = {
   roles: { [index: string]: address[] }
-  holders: number
-  balances: { [index: string]: BigNumberish }
-  approvals: {}
+  holders: BigNumberish
+  balances: { [address: address]: BigNumberish }
+  approvals: { [owner: address]: { [operator: address]: BigNumberish } }
   totalSupply: BigNumberish
 }
 
@@ -28,11 +29,11 @@ export default class Token extends Roles {
   /**
    * Object => Object => uint
    */
-  #approvals = {}
+  #approvals: { [owner: string]: { [operator: string]: typeof BigNumber } } = {}
 
   #decimals = 18
 
-  #totalSupply = BigNumber['from'](0)
+  #totalSupply: typeof BigNumber = BigNumber['from'](0)
 
   // this.#privateField2 = 1
   constructor(name: string, symbol: string, decimals: number = 18, state?: TokenState) {
@@ -42,9 +43,9 @@ export default class Token extends Roles {
     super(state?.roles)
 
     if (state) {
+      this.#balances = restoreBalances(state.balances)
+      this.#approvals = restoreApprovals(state.approvals)
       this.#holders = BigNumber['from'](state.holders)
-      this.#balances = BigNumber['from'](state.balances)
-      this.#approvals = BigNumber['from'](state.approvals)
       this.#totalSupply = BigNumber['from'](state.totalSupply)
     } else {
       this.#name = name
@@ -138,7 +139,7 @@ export default class Token extends Roles {
   setApproval(operator: address, amount: BigNumberish) {
     const owner = msg.sender
     if (!this.#approvals[owner]) this.#approvals[owner] = {}
-    this.#approvals[owner][operator] = amount
+    this.#approvals[owner][operator] = BigNumber['from'](amount)
   }
 
   approved(owner: address, operator: address, amount: BigNumberish): boolean {

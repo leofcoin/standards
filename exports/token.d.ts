@@ -3,11 +3,15 @@ export declare type TokenState = {
     roles: {
         [index: string]: address[];
     };
-    holders: number;
+    holders: BigNumberish;
     balances: {
-        [index: string]: BigNumberish;
+        [address: address]: BigNumberish;
     };
-    approvals: {};
+    approvals: {
+        [owner: address]: {
+            [operator: address]: BigNumberish;
+        };
+    };
     totalSupply: BigNumberish;
 };
 export default class Token extends Roles {
