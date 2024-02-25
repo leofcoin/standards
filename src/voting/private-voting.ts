@@ -11,7 +11,7 @@ export type Vote = {
   enoughVotes?: boolean
 }
 
-export type VotingState = {
+export type PrivateVotingState = {
   voters: address[]
   votes: {
     [id: string]: Vote
@@ -22,12 +22,12 @@ export interface VoteView extends Vote {
   id: string
 }
 
-export default class Voting {
-  #voters: VotingState['voters']
-  #votes: VotingState['votes']
+export default class PrivateVoting {
+  #voters: PrivateVotingState['voters']
+  #votes: PrivateVotingState['votes']
   #votingDisabled: boolean
 
-  constructor(state: VotingState) {
+  constructor(state: PrivateVotingState) {
     if (state) {
       this.#voters = state.voters
       this.#votes = state.votes

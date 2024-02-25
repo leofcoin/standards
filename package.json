@@ -16,9 +16,17 @@
       "import": "./exports/roles.js",
       "types": "./exports/roles.d.ts"
     },
-    "./voting": {
-      "import": "./exports/voting.js",
-      "types": "./exports/voting.d.ts"
+    "./public-voting": {
+      "import": "./exports/public-voting.js",
+      "types": "./exports/public-voting.d.ts"
+    },
+    "./private-voting": {
+      "import": "./exports/private-voting.js",
+      "types": "./exports/private-voting.d.ts"
+    },
+    "./token-receiver": {
+      "import": "./exports/token-receiver.js",
+      "types": "./exports/token-receiver.d.ts"
     },
     "./helpers": {
       "import": "./exports/helpers.js",
@@ -26,7 +34,8 @@
     },
     "./token.js": "./exports/token.js",
     "./roles.js": "./exports/roles.js",
-    "./voting.js": "./exports/voting.js",
+    "./public-voting.js": "./exports/public-voting.js",
+    "./private-voting.js": "./exports/private-voting.js",
     "./helpers.js": "./exports/helpers.js"
   },
   "scripts": {

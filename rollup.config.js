@@ -10,7 +10,15 @@ const clean = () => {
 
 export default [
   {
-    input: ['src/index.ts', 'src/token.ts', 'src/roles.ts', 'src/voting.ts', 'src/helpers.ts'],
+    input: [
+      'src/index.ts',
+      'src/token.ts',
+      'src/roles.ts',
+      'src/voting/public-voting.ts',
+      'src/voting/private-voting.ts',
+      'src/helpers.ts',
+      'src/token-receiver.ts'
+    ],
     output: {
       dir: './exports',
       format: 'es'
