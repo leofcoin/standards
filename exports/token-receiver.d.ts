@@ -40,6 +40,7 @@ export default class TokenReceiver extends PublicVoting implements IPublicVoting
      * @returns {boolean} promise
      */
     _burnTokenToReceive(): Promise<boolean>;
+    _canPay(): Promise<any>;
     changeVoteType(type: TokenReceiverState['voteType']): Promise<void>;
     getTokensOut(amount: typeof BigNumber, receiver: address): void;
     changeTokenAmountToReceive(): void;

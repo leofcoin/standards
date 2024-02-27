@@ -76,6 +76,10 @@ class TokenReceiver extends PublicVoting {
     async _burnTokenToReceive() {
         return msg.staticCall(this.#tokenToReceive, 'burn', [this.#tokenAmountToReceive]);
     }
+    async _canPay() {
+        const amount = await msg.call(this.#tokenToReceive, 'balance', []);
+        return amount.gte(this.tokenAmountToReceive);
+    }
     #changeTokenToReceive(address) {
         this.#tokenToReceive = address;
     }

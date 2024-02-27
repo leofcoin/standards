@@ -98,6 +98,11 @@ export default class TokenReceiver extends PublicVoting implements IPublicVoting
     return msg.staticCall(this.#tokenToReceive, 'burn', [this.#tokenAmountToReceive])
   }
 
+  async _canPay() {
+    const amount = await msg.call(this.#tokenToReceive, 'balance', [])
+    return amount.gte(this.tokenAmountToReceive)
+  }
+
   #changeTokenToReceive(address: address) {
     this.#tokenToReceive = address
   }
