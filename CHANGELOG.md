@@ -1,5 +1,11 @@
 # @leofcoin/standards
 
+## 0.2.2
+
+### Patch Changes
+
+- e8609a5: Fix types & build
+
 ## 0.2.1
 
 ### Patch Changes

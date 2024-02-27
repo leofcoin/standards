@@ -1,6 +1,6 @@
 {
   "name": "@leofcoin/standards",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Contract standards",
   "type": "module",
   "exports": {
@@ -29,8 +29,7 @@
       "types": "./exports/token-receiver.d.ts"
     },
     "./interfaces/i-public-voting": {
-      "import": "./exports/i-public-voting.js",
-      "types": "./exports/i-public-voting.d.ts"
+      "types": "./exports/voting/interfaces/i-public-voting.d.ts"
     },
     "./helpers": {
       "import": "./exports/helpers.js",
@@ -39,7 +38,6 @@
     "./token.js": "./exports/token.js",
     "./roles.js": "./exports/roles.js",
     "./public-voting.js": "./exports/public-voting.js",
-    "./interfaces/i-public-voting.js": "./exports/i-public-voting.js",
     "./private-voting.js": "./exports/private-voting.js",
     "./helpers.js": "./exports/helpers.js"
   },
