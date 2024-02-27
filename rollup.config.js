@@ -14,6 +14,7 @@ export default [
       'src/token.ts',
       'src/roles.ts',
       'src/voting/public-voting.ts',
+      'src/voting/interfaces/i-public-voting.ts',
       'src/voting/private-voting.ts',
       'src/helpers.ts',
       'src/token-receiver.ts'

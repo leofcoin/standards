@@ -1,4 +1,4 @@
-import { IPublicVoting } from './voting/interfaces/public-voting.js'
+import { IPublicVoting } from './voting/interfaces/i-public-voting.js'
 import PublicVoting from './voting/public-voting.js'
 import { VotingState } from './voting/types.js'
 
