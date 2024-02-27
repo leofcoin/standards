@@ -1,25 +1,7 @@
-export type VoteResult = 0 | 0.5 | 1
+import { VoteResult, VoteView, VotingState } from './types.js'
 
-export type Vote = {
-  title: string
-  method: string
-  args: any[]
-  description: string
-  endTime: EpochTimeStamp
-  results?: { [address: address]: VoteResult }
-  finished?: boolean
-  enoughVotes?: boolean
-}
-
-export type PrivateVotingState = {
-  voters: address[]
-  votes: {
-    [id: string]: Vote
-  }
-  votingDisabled: boolean
-}
-export interface VoteView extends Vote {
-  id: string
+export interface PrivateVotingState extends VotingState {
+  voters
 }
 
 export default class PrivateVoting {

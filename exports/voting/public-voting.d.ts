@@ -1,41 +1,38 @@
-import TokenReceiver, { TokenReceiverState } from '../token-receiver.js';
-export type VoteResult = 0 | 0.5 | 1;
-export type PublicVote = {
-    title: string;
-    method: string;
-    args: any[];
-    description: string;
-    endTime: EpochTimeStamp;
-    results?: {
-        [address: address]: VoteResult;
-    };
-    finished?: boolean;
-    enoughVotes?: boolean;
-};
-export interface PublicVotingState extends TokenReceiverState {
-    votes: {
-        [id: string]: PublicVote;
-    };
-    votingDisabled: boolean;
-}
-export interface VoteView extends PublicVote {
-    id: string;
-}
+import { VotingState, VoteResult } from './types.js';
 /**
  * allows everybody that has a balance greater or equeal then/to tokenAmountToReceive to vote
  */
-export default class PublicVoting extends TokenReceiver {
+export default class PublicVoting {
     #private;
-    constructor(tokenToReceive: address, tokenAmountToReceive: typeof BigNumber, state: PublicVotingState);
+    constructor(state: VotingState);
     get votes(): {
-        [x: string]: PublicVote;
+        [x: string]: import("./types.js").Vote;
     };
+    get votingDuration(): number;
     get votingDisabled(): boolean;
     /**
      *
      */
-    get state(): PublicVotingState;
-    get inProgress(): VoteView[];
+    get state(): {
+        votes: {
+            [id: string]: import("./types.js").Vote;
+        };
+        votingDisabled: boolean;
+        votingDuration: number;
+    };
+    get inProgress(): {
+        id: string;
+        title: string;
+        method: string;
+        args: any[];
+        description: string;
+        endTime: number;
+        results?: {
+            [address: string]: VoteResult;
+        };
+        finished?: boolean;
+        enoughVotes?: boolean;
+    }[];
     /**
      * create vote
      * @param {string} vote
@@ -44,8 +41,7 @@ export default class PublicVoting extends TokenReceiver {
      * @param {string} method function to run when agree amount is bigger
      */
     createVote(title: string, description: string, endTime: EpochTimeStamp, method: string, args?: any[]): void;
-    canVote(address: address): Promise<boolean>;
     vote(voteId: string, vote: VoteResult): Promise<void>;
     disableVoting(): void;
-    sync(): void;
+    _sync(): void;
 }

@@ -1,5 +1,4 @@
 import typescript from '@rollup/plugin-typescript'
-import tsConfig from './tsconfig.json' assert { type: 'json' }
 import { execSync } from 'child_process'
 
 // const templates = (await readdir('./src/templates')).map(path => join('./src/templates', path))
@@ -23,6 +22,6 @@ export default [
       dir: './exports',
       format: 'es'
     },
-    plugins: [typescript(tsConfig)]
+    plugins: [typescript()]
   }
 ]

@@ -1,38 +1,14 @@
-import TokenReceiver, { TokenReceiverState } from '../token-receiver.js'
-import PrivateVoting from './private-voting.js'
-
-export type VoteResult = 0 | 0.5 | 1
-
-export type PublicVote = {
-  title: string
-  method: string
-  args: any[]
-  description: string
-  endTime: EpochTimeStamp
-  results?: { [address: address]: VoteResult }
-  finished?: boolean
-  enoughVotes?: boolean
-}
-
-export interface PublicVotingState extends TokenReceiverState {
-  votes: {
-    [id: string]: PublicVote
-  }
-  votingDisabled: boolean
-}
-export interface VoteView extends PublicVote {
-  id: string
-}
+import { VotingState, VoteResult } from './types.js'
 
 /**
  * allows everybody that has a balance greater or equeal then/to tokenAmountToReceive to vote
  */
-export default class PublicVoting extends TokenReceiver {
-  #votes: PublicVotingState['votes']
+export default class PublicVoting {
+  #votes: VotingState['votes']
   #votingDisabled: boolean
+  #votingDuration: number = 172800000
 
-  constructor(tokenToReceive: address, tokenAmountToReceive: typeof BigNumber, state: PublicVotingState) {
-    super(tokenToReceive, tokenAmountToReceive, state)
+  constructor(state: VotingState) {
     if (state) {
       this.#votes = state.votes
       this.#votingDisabled = state.votingDisabled
@@ -43,6 +19,10 @@ export default class PublicVoting extends TokenReceiver {
     return { ...this.#votes }
   }
 
+  get votingDuration() {
+    return this.#votingDuration
+  }
+
   get votingDisabled() {
     return this.#votingDisabled
   }
@@ -50,11 +30,11 @@ export default class PublicVoting extends TokenReceiver {
   /**
    *
    */
-  get state(): PublicVotingState {
-    return { ...super.state, votes: this.#votes, votingDisabled: this.#votingDisabled }
+  get state() {
+    return { votes: this.#votes, votingDisabled: this.#votingDisabled, votingDuration: this.#votingDuration }
   }
 
-  get inProgress(): VoteView[] {
+  get inProgress() {
     return Object.entries(this.#votes)
       .filter(([id, vote]) => !vote.finished)
       .map(([id, vote]) => {
@@ -70,7 +50,7 @@ export default class PublicVoting extends TokenReceiver {
    */
 
   createVote(title: string, description: string, endTime: EpochTimeStamp, method: string, args: any[] = []) {
-    if (!this.canVote(msg.sender)) throw new Error(`Not allowed to create a vote`)
+    if (!this.#canVote()) throw new Error(`Not allowed to create a vote`)
     const id = crypto.randomUUID()
     this.#votes[id] = {
       title,
@@ -81,8 +61,14 @@ export default class PublicVoting extends TokenReceiver {
     }
   }
 
-  canVote(address: address) {
-    return this.canPay()
+  #canVote() {
+    // @ts-expect-error
+    return this._canVote?.()
+  }
+
+  #beforeVote() {
+    // @ts-expect-error
+    return this._beforeVote?.()
   }
 
   #endVoting(voteId) {
@@ -100,8 +86,8 @@ export default class PublicVoting extends TokenReceiver {
     const ended = new Date().getTime() > this.#votes[voteId].endTime
     if (ended && !this.#votes[voteId].finished) this.#endVoting(voteId)
     if (ended) throw new Error('voting already ended')
-    if (!this.canVote(msg.sender)) throw new Error(`Not allowed to vote`)
-    await msg.staticCall(this.tokenToReceive, 'burn', [this.tokenAmountToReceive])
+    if (!this.#canVote()) throw new Error(`Not allowed to vote`)
+    await this.#beforeVote()
     this.#votes[voteId][msg.sender] = vote
   }
 
@@ -110,19 +96,19 @@ export default class PublicVoting extends TokenReceiver {
   }
 
   disableVoting() {
-    if (!this.canVote(msg.sender)) throw new Error('not a allowed')
+    if (!this.#canVote()) throw new Error('not a allowed')
     else {
       this.createVote(
         `disable voting`,
         `Warning this disables all voting features forever`,
-        new Date().getTime() + 172800000,
+        new Date().getTime() + this.#votingDuration,
         '#disableVoting',
         []
       )
     }
   }
 
-  sync() {
+  _sync() {
     for (const vote of this.inProgress) {
       if (vote.endTime < new Date().getTime()) this.#endVoting(vote.id)
     }

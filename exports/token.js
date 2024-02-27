@@ -73,6 +73,9 @@ class Token extends Roles {
     get balances() {
         return { ...this.#balances };
     }
+    get approvals() {
+        return this.#approvals;
+    }
     get decimals() {
         return this.#decimals;
     }
@@ -109,6 +112,9 @@ class Token extends Roles {
         const previousBalance = this.#balances[address];
         this.#balances[address] = this.#balances[address].sub(amount);
         this.#updateHolders(address, previousBalance);
+    }
+    balance() {
+        return this.#balances[msg.sender];
     }
     balanceOf(address) {
         return this.#balances[address];

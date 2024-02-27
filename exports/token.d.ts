@@ -26,9 +26,15 @@ export default class Token extends Roles {
     get symbol(): string;
     get holders(): {};
     get balances(): {};
+    get approvals(): {
+        [owner: string]: {
+            [operator: string]: import("@ethersproject/bignumber").BigNumber;
+        };
+    };
     get decimals(): number;
     mint(to: address, amount: BigNumberish): void;
     burn(from: address, amount: BigNumberish): void;
+    balance(): any;
     balanceOf(address: address): BigNumberish;
     setApproval(operator: address, amount: BigNumberish): void;
     approved(owner: address, operator: address, amount: BigNumberish): boolean;

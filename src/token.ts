@@ -90,6 +90,10 @@ export default class Token extends Roles {
     return { ...this.#balances }
   }
 
+  get approvals() {
+    return this.#approvals
+  }
+
   get decimals() {
     return this.#decimals
   }
@@ -130,6 +134,10 @@ export default class Token extends Roles {
     const previousBalance = this.#balances[address]
     this.#balances[address] = this.#balances[address].sub(amount)
     this.#updateHolders(address, previousBalance)
+  }
+
+  balance() {
+    return this.#balances[msg.sender]
   }
 
   balanceOf(address: address): BigNumberish {
