@@ -1,5 +1,6 @@
 import { restoreBalances, restoreApprovals } from './helpers.js';
 import Roles from './roles.js';
+import './contract-creator.js';
 
 class Token extends Roles {
     /**

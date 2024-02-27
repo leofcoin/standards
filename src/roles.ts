@@ -1,4 +1,10 @@
-export default class Roles {
+import ContractCreator, { ContractCreatorState } from './contract-creator.js'
+
+export interface RolesState extends ContractCreatorState {
+  roles: { [index: string]: address[] }
+}
+
+export default class Roles extends ContractCreator {
   /**
    * Object => Array
    */
@@ -8,14 +14,15 @@ export default class Roles {
     BURN: []
   }
 
-  constructor(roles: { [index: string]: address[] }) {
+  constructor(state) {
+    super(state)
     // allow devs to set their own roles but always keep the default ones included
     // also allows roles to be loaded from the stateStore
     // carefull when including the roles make sure to add the owner
     // because no roles are granted by default when using custom roles
-    if (roles) {
-      if (roles instanceof Object) {
-        this.#roles = { ...roles, ...this.#roles }
+    if (state.roles) {
+      if (state.roles instanceof Object) {
+        this.#roles = { ...state.roles, ...this.#roles }
       } else {
         throw new TypeError(`expected roles to be an object`)
       }
@@ -28,8 +35,8 @@ export default class Roles {
   /**
    *
    */
-  get state(): {} {
-    return { roles: this.roles }
+  get state(): RolesState {
+    return { ...super.state, roles: this.roles }
   }
 
   get roles(): {} {

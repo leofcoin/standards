@@ -1,12 +1,16 @@
-export default class Roles {
-    #private;
-    constructor(roles: {
+import ContractCreator, { ContractCreatorState } from './contract-creator.js';
+export interface RolesState extends ContractCreatorState {
+    roles: {
         [index: string]: address[];
-    });
+    };
+}
+export default class Roles extends ContractCreator {
+    #private;
+    constructor(state: any);
     /**
      *
      */
-    get state(): {};
+    get state(): RolesState;
     get roles(): {};
     /**
      * @param {address} address

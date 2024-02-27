@@ -1,4 +1,6 @@
-class Roles {
+import ContractCreator from './contract-creator.js';
+
+class Roles extends ContractCreator {
     /**
      * Object => Array
      */
@@ -7,14 +9,15 @@ class Roles {
         MINT: [],
         BURN: []
     };
-    constructor(roles) {
+    constructor(state) {
+        super(state);
         // allow devs to set their own roles but always keep the default ones included
         // also allows roles to be loaded from the stateStore
         // carefull when including the roles make sure to add the owner
         // because no roles are granted by default when using custom roles
-        if (roles) {
-            if (roles instanceof Object) {
-                this.#roles = { ...roles, ...this.#roles };
+        if (state.roles) {
+            if (state.roles instanceof Object) {
+                this.#roles = { ...state.roles, ...this.#roles };
             }
             else {
                 throw new TypeError(`expected roles to be an object`);
@@ -29,7 +32,7 @@ class Roles {
      *
      */
     get state() {
-        return { roles: this.roles };
+        return { ...super.state, roles: this.roles };
     }
     get roles() {
         return { ...this.#roles };

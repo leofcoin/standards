@@ -16,6 +16,7 @@ export default [
       'src/voting/public-voting.ts',
       'src/voting/private-voting.ts',
       'src/helpers.ts',
+      'src/contract-creator.ts',
       'src/token-receiver.ts'
     ],
     output: {

@@ -24,6 +24,10 @@
       "import": "./exports/private-voting.js",
       "types": "./exports/private-voting.d.ts"
     },
+    "./contract-creator": {
+      "import": "./exports/contract-creator.js",
+      "types": "./exports/contract-creator.d.ts"
+    },
     "./token-receiver": {
       "import": "./exports/token-receiver.js",
       "types": "./exports/token-receiver.d.ts"
@@ -39,6 +43,7 @@
     "./roles.js": "./exports/roles.js",
     "./public-voting.js": "./exports/public-voting.js",
     "./private-voting.js": "./exports/private-voting.js",
+    "./contract-creator.js": "./exports/contract-creator.js",
     "./helpers.js": "./exports/helpers.js"
   },
   "scripts": {
