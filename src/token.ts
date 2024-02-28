@@ -1,8 +1,7 @@
 import { restoreApprovals, restoreBalances } from './helpers.js'
-import Roles from './roles.js'
+import Roles, { RolesState } from './roles.js'
 
-export declare type TokenState = {
-  roles: { [index: string]: address[] }
+export declare interface TokenState extends RolesState {
   holders: BigNumberish
   balances: { [address: address]: BigNumberish }
   approvals: { [owner: address]: { [operator: address]: BigNumberish } }
@@ -60,7 +59,7 @@ export default class Token extends Roles {
   /**
    * @return {Object} {holders, balances, ...}
    */
-  get state(): {} {
+  get state(): TokenState {
     return {
       ...super.state,
       holders: this.holders,
@@ -82,11 +81,11 @@ export default class Token extends Roles {
     return this.#symbol
   }
 
-  get holders(): {} {
+  get holders(): TokenState['holders'] {
     return this.#holders
   }
 
-  get balances(): {} {
+  get balances(): TokenState['balances'] {
     return { ...this.#balances }
   }
 

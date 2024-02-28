@@ -1,8 +1,7 @@
 import { IPublicVoting } from './voting/interfaces/i-public-voting.js'
-import PublicVoting from './voting/public-voting.js'
-import { VotingState } from './voting/types.js'
+import PublicVoting, { PublicVotingState } from './voting/public-voting.js'
 
-export interface TokenReceiverState extends VotingState {
+export interface TokenReceiverState extends PublicVotingState {
   tokenToReceive: address
   tokenReceiver: address
   tokenAmountToReceive: typeof BigNumber

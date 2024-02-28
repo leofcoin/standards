@@ -1,8 +1,9 @@
+import ContractCreator, { ContractCreatorState } from '../contract-creator.js';
 import { VoteResult, VoteView, VotingState } from './types.js';
-export interface PrivateVotingState extends VotingState {
+export interface PrivateVotingState extends VotingState, ContractCreatorState {
     voters: any;
 }
-export default class PrivateVoting {
+export default class PrivateVoting extends ContractCreator {
     #private;
     constructor(state: PrivateVotingState);
     get votes(): {
@@ -13,7 +14,7 @@ export default class PrivateVoting {
     /**
      *
      */
-    get state(): {};
+    get state(): PrivateVotingState;
     get inProgress(): VoteView[];
     /**
      * create vote

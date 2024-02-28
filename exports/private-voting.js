@@ -1,12 +1,17 @@
-class PrivateVoting {
+import ContractCreator from './contract-creator.js';
+
+class PrivateVoting extends ContractCreator {
     #voters;
     #votes;
     #votingDisabled;
+    #votingDuration = 172800000;
     constructor(state) {
+        super(state);
         if (state) {
             this.#voters = state.voters;
             this.#votes = state.votes;
             this.#votingDisabled = state.votingDisabled;
+            this.#votingDuration = state.votingDuration;
         }
         else {
             this.#voters = [msg.sender];
@@ -25,7 +30,13 @@ class PrivateVoting {
      *
      */
     get state() {
-        return { voters: this.#voters, votes: this.#votes, votingDisabled: this.#votingDisabled };
+        return {
+            ...super.state,
+            voters: this.#voters,
+            votes: this.#votes,
+            votingDisabled: this.#votingDisabled,
+            votingDuration: this.#votingDuration
+        };
     }
     get inProgress() {
         return Object.entries(this.#votes)
@@ -101,14 +112,14 @@ class PrivateVoting {
         if (this.#voters.length === 1)
             this.#disableVoting();
         else {
-            this.createVote(`disable voting`, `Warning this disables all voting features forever`, new Date().getTime() + 172800000, '#disableVoting', []);
+            this.createVote(`disable voting`, `Warning this disables all voting features forever`, new Date().getTime() + this.#votingDuration, '#disableVoting', []);
         }
     }
     grantVotingPower(address, voteId) {
         if (this.#voters.length === 1 && this.canVote(msg.sender))
             this.#grantVotingPower(address);
         else {
-            this.createVote(`grant voting power to ${address}`, `Should we grant ${address} voting power?`, new Date().getTime() + 172800000, '#grantVotingPower', [address]);
+            this.createVote(`grant voting power to ${address}`, `Should we grant ${address} voting power?`, new Date().getTime() + this.#votingDuration, '#grantVotingPower', [address]);
         }
     }
     revokeVotingPower(address, voteId) {
@@ -119,7 +130,7 @@ class PrivateVoting {
         if (this.#voters.length === 1)
             this.#revokeVotingPower(address);
         else {
-            this.createVote(`revoke voting power for ${address}`, `Should we revoke ${address} it's voting power?`, new Date().getTime() + 172800000, '#revokeVotingPower', [address]);
+            this.createVote(`revoke voting power for ${address}`, `Should we revoke ${address} it's voting power?`, new Date().getTime() + this.#votingDuration, '#revokeVotingPower', [address]);
         }
     }
     sync() {

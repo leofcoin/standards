@@ -1,8 +1,5 @@
-import Roles from './roles.js';
-export declare type TokenState = {
-    roles: {
-        [index: string]: address[];
-    };
+import Roles, { RolesState } from './roles.js';
+export declare interface TokenState extends RolesState {
     holders: BigNumberish;
     balances: {
         [address: address]: BigNumberish;
@@ -13,19 +10,19 @@ export declare type TokenState = {
         };
     };
     totalSupply: BigNumberish;
-};
+}
 export default class Token extends Roles {
     #private;
     constructor(name: string, symbol: string, decimals?: number, state?: TokenState);
     /**
      * @return {Object} {holders, balances, ...}
      */
-    get state(): {};
+    get state(): TokenState;
     get totalSupply(): BigNumberish;
     get name(): string;
     get symbol(): string;
-    get holders(): {};
-    get balances(): {};
+    get holders(): TokenState['holders'];
+    get balances(): TokenState['balances'];
     get approvals(): {
         [owner: string]: {
             [operator: string]: import("@ethersproject/bignumber").BigNumber;

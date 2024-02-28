@@ -1,7 +1,6 @@
 import { IPublicVoting } from './voting/interfaces/i-public-voting.js';
-import PublicVoting from './voting/public-voting.js';
-import { VotingState } from './voting/types.js';
-export interface TokenReceiverState extends VotingState {
+import PublicVoting, { PublicVotingState } from './voting/public-voting.js';
+export interface TokenReceiverState extends PublicVotingState {
     tokenToReceive: address;
     tokenReceiver: address;
     tokenAmountToReceive: typeof BigNumber;
@@ -18,11 +17,9 @@ export default class TokenReceiver extends PublicVoting implements IPublicVoting
         tokenToReceive: string;
         tokenAmountToReceive: import("@ethersproject/bignumber").BigNumber;
         voteType: "burn" | "transfer";
-        votes: {
-            [id: string]: import("./voting/types.js").Vote;
-        };
         votingDisabled: boolean;
         votingDuration: number;
+        contractCreator: string;
     };
     /**
      * check if sender can pay

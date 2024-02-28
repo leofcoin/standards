@@ -1,19 +1,23 @@
+import ContractCreator, { ContractCreatorState } from '../contract-creator.js'
 import { VoteResult, VoteView, VotingState } from './types.js'
 
-export interface PrivateVotingState extends VotingState {
+export interface PrivateVotingState extends VotingState, ContractCreatorState {
   voters
 }
 
-export default class PrivateVoting {
+export default class PrivateVoting extends ContractCreator {
   #voters: PrivateVotingState['voters']
   #votes: PrivateVotingState['votes']
   #votingDisabled: boolean
+  #votingDuration: number = 172800000
 
   constructor(state: PrivateVotingState) {
+    super(state)
     if (state) {
       this.#voters = state.voters
       this.#votes = state.votes
       this.#votingDisabled = state.votingDisabled
+      this.#votingDuration = state.votingDuration
     } else {
       this.#voters = [msg.sender]
     }
@@ -34,8 +38,14 @@ export default class PrivateVoting {
   /**
    *
    */
-  get state(): {} {
-    return { voters: this.#voters, votes: this.#votes, votingDisabled: this.#votingDisabled }
+  get state(): PrivateVotingState {
+    return {
+      ...super.state,
+      voters: this.#voters,
+      votes: this.#votes,
+      votingDisabled: this.#votingDisabled,
+      votingDuration: this.#votingDuration
+    }
   }
 
   get inProgress(): VoteView[] {
@@ -116,7 +126,7 @@ export default class PrivateVoting {
       this.createVote(
         `disable voting`,
         `Warning this disables all voting features forever`,
-        new Date().getTime() + 172800000,
+        new Date().getTime() + this.#votingDuration,
         '#disableVoting',
         []
       )
@@ -129,7 +139,7 @@ export default class PrivateVoting {
       this.createVote(
         `grant voting power to ${address}`,
         `Should we grant ${address} voting power?`,
-        new Date().getTime() + 172800000,
+        new Date().getTime() + this.#votingDuration,
         '#grantVotingPower',
         [address]
       )
@@ -145,7 +155,7 @@ export default class PrivateVoting {
       this.createVote(
         `revoke voting power for ${address}`,
         `Should we revoke ${address} it's voting power?`,
-        new Date().getTime() + 172800000,
+        new Date().getTime() + this.#votingDuration,
         '#revokeVotingPower',
         [address]
       )

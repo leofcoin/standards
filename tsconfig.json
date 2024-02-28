@@ -7,10 +7,5 @@
     "declaration": true,
     "declarationDir": "./exports"
   },
-  "include": [
-    "./src/*",
-    "./node_modules/@leofcoin/global-types/*",
-    "src/voting/private-voting.ts",
-    "src/voting/public-voting.ts"
-  ]
+  "include": ["./src/*", "./node_modules/@leofcoin/global-types/*"]
 }

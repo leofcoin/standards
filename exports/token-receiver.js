@@ -1,4 +1,5 @@
 import PublicVoting from './public-voting.js';
+import './contract-creator.js';
 
 class TokenReceiver extends PublicVoting {
     #tokenToReceive;

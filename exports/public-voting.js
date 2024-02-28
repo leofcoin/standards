@@ -1,14 +1,15 @@
-/**
- * allows everybody that has a balance greater or equeal then/to tokenAmountToReceive to vote
- */
-class PublicVoting {
-    #votes;
-    #votingDisabled;
+import ContractCreator from './contract-creator.js';
+
+class Voting extends ContractCreator {
+    #votes = {};
+    #votingDisabled = false;
     #votingDuration = 172800000;
     constructor(state) {
+        super(state);
         if (state) {
             this.#votes = state.votes;
             this.#votingDisabled = state.votingDisabled;
+            this.#votingDuration = state.votingDuration;
         }
     }
     get votes() {
@@ -20,18 +21,24 @@ class PublicVoting {
     get votingDisabled() {
         return this.#votingDisabled;
     }
-    /**
-     *
-     */
     get state() {
-        return { votes: this.#votes, votingDisabled: this.#votingDisabled, votingDuration: this.#votingDuration };
+        return {
+            ...super.state,
+            votingDisabled: this.#votingDisabled,
+            votingDuration: this.#votingDuration
+        };
     }
-    get inProgress() {
-        return Object.entries(this.#votes)
-            .filter(([id, vote]) => !vote.finished)
-            .map(([id, vote]) => {
-            return { ...vote, id };
-        });
+    #canVote() {
+        // @ts-expect-error
+        return this._canVote?.();
+    }
+    #beforeVote() {
+        // @ts-expect-error
+        return this._beforeVote?.();
+    }
+    #afterVote() {
+        // @ts-expect-error
+        return this._afterVote?.();
     }
     /**
      * create vote
@@ -51,14 +58,6 @@ class PublicVoting {
             endTime,
             args
         };
-    }
-    #canVote() {
-        // @ts-expect-error
-        return this._canVote?.();
-    }
-    #beforeVote() {
-        // @ts-expect-error
-        return this._beforeVote?.();
     }
     #endVoting(voteId) {
         let agree = Object.values(this.#votes[voteId].results).filter((result) => result === 1);
@@ -82,6 +81,14 @@ class PublicVoting {
             throw new Error(`Not allowed to vote`);
         await this.#beforeVote();
         this.#votes[voteId][msg.sender] = vote;
+        await this.#afterVote();
+    }
+    get votesInProgress() {
+        return Object.entries(this.#votes)
+            .filter(([id, vote]) => !vote.finished)
+            .map(([id, vote]) => {
+            return { ...vote, id };
+        });
     }
     #disableVoting() {
         this.#votingDisabled = true;
@@ -94,10 +101,19 @@ class PublicVoting {
         }
     }
     _sync() {
-        for (const vote of this.inProgress) {
+        for (const vote of this.votesInProgress) {
             if (vote.endTime < new Date().getTime())
                 this.#endVoting(vote.id);
         }
+    }
+}
+
+/**
+ * allows everybody that has a balance greater or equeal then/to tokenAmountToReceive to vote
+ */
+class PublicVoting extends Voting {
+    constructor(state) {
+        super(state);
     }
 }
 
