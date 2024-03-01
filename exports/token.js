@@ -31,7 +31,7 @@ class Token extends Roles {
             throw new Error(`name undefined`);
         if (!symbol)
             throw new Error(`symbol undefined`);
-        super(state?.roles);
+        super(state);
         if (state) {
             this.#balances = restoreBalances(state.balances);
             this.#approvals = restoreApprovals(state.approvals);

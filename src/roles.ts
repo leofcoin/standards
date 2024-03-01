@@ -20,7 +20,7 @@ export default class Roles extends ContractCreator {
     // also allows roles to be loaded from the stateStore
     // carefull when including the roles make sure to add the owner
     // because no roles are granted by default when using custom roles
-    if (state.roles) {
+    if (state?.roles) {
       if (state.roles instanceof Object) {
         this.#roles = { ...state.roles, ...this.#roles }
       } else {
