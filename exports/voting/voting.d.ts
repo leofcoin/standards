@@ -1,5 +1,7 @@
-import ContractCreator from '../contract-creator.js';
-import { Vote, VoteResult } from './types.js';
+import ContractCreator, { ContractCreatorState } from '../contract-creator.js';
+import { Vote, VoteResult, VotingState } from './types.js';
+export declare interface _VotingState extends VotingState, ContractCreatorState {
+}
 export default class Voting extends ContractCreator {
     #private;
     constructor(state: any);
@@ -8,14 +10,7 @@ export default class Voting extends ContractCreator {
     };
     get votingDuration(): number;
     get votingDisabled(): boolean;
-    get state(): {
-        votes: {
-            [id: string]: Vote;
-        };
-        votingDisabled: boolean;
-        votingDuration: number;
-        contractCreator: string;
-    };
+    get state(): _VotingState;
     /**
      * create vote
      * @param {string} vote

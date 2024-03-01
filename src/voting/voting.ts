@@ -1,5 +1,6 @@
 import ContractCreator, { ContractCreatorState } from '../contract-creator.js'
 import { Vote, VoteResult, VoteView, VotingState } from './types.js'
+export declare interface _VotingState extends VotingState, ContractCreatorState {}
 export default class Voting extends ContractCreator {
   #votes: VotingState['votes'] = {}
   #votingDisabled: boolean = false
@@ -25,7 +26,7 @@ export default class Voting extends ContractCreator {
     return this.#votingDisabled
   }
 
-  get state() {
+  get state(): _VotingState {
     return {
       ...super.state,
       votes: this.#votes,
