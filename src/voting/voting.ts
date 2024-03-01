@@ -28,6 +28,7 @@ export default class Voting extends ContractCreator {
   get state() {
     return {
       ...super.state,
+      votes: this.#votes,
       votingDisabled: this.#votingDisabled,
       votingDuration: this.#votingDuration
     }

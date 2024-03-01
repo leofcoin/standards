@@ -9,6 +9,9 @@ export default class Voting extends ContractCreator {
     get votingDuration(): number;
     get votingDisabled(): boolean;
     get state(): {
+        votes: {
+            [id: string]: Vote;
+        };
         votingDisabled: boolean;
         votingDuration: number;
         contractCreator: string;

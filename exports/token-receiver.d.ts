@@ -17,6 +17,9 @@ export default class TokenReceiver extends PublicVoting implements IPublicVoting
         tokenToReceive: string;
         tokenAmountToReceive: import("@ethersproject/bignumber").BigNumber;
         voteType: "burn" | "transfer";
+        votes: {
+            [id: string]: import("./voting/types.js").Vote;
+        };
         votingDisabled: boolean;
         votingDuration: number;
         contractCreator: string;
