@@ -1,4 +1,4 @@
-import { IPublicVoting } from './voting/interfaces/i-public-voting.js'
+import { IVoting } from './voting/interfaces/i-voting.js'
 import PublicVoting, { PublicVotingState } from './voting/public-voting.js'
 
 export interface TokenReceiverState extends PublicVotingState {
@@ -7,7 +7,7 @@ export interface TokenReceiverState extends PublicVotingState {
   tokenAmountToReceive: typeof BigNumber
   voteType: 'burn' | 'transfer'
 }
-export default class TokenReceiver extends PublicVoting implements IPublicVoting {
+export default class TokenReceiver extends PublicVoting implements IVoting {
   #tokenToReceive: address
   #tokenAmountToReceive: typeof BigNumber
   #tokenReceiver: address
@@ -74,7 +74,7 @@ export default class TokenReceiver extends PublicVoting implements IPublicVoting
   }
 
   async _beforeVote(): Promise<any> {
-    await this.#beforeVote()
+    return this.#beforeVote()
   }
 
   /**
