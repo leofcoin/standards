@@ -1,11 +1,12 @@
 import ContractCreator, { ContractCreatorState } from '../contract-creator.js'
-import { Vote, VoteResult, VoteView, VotingState } from './types.js'
-export declare interface _VotingState extends VotingState, ContractCreatorState {}
+import { Vote, VoteResult, VoteView, VotingState as _VotingState } from './types.js'
+export declare interface VotingState extends _VotingState, ContractCreatorState {}
+
 export default class Voting extends ContractCreator {
   #votes: VotingState['votes'] = {}
   #votingDisabled: boolean = false
   #votingDuration: number = 172800000
-  constructor(state) {
+  constructor(state: VotingState) {
     super(state)
     if (state) {
       this.#votes = state.votes
@@ -26,7 +27,7 @@ export default class Voting extends ContractCreator {
     return this.#votingDisabled
   }
 
-  get state(): _VotingState {
+  get state(): VotingState {
     return {
       ...super.state,
       votes: this.#votes,
@@ -72,8 +73,7 @@ export default class Voting extends ContractCreator {
   #endVoting(voteId) {
     let agree = Object.values(this.#votes[voteId].results).filter((result) => result === 1)
     let disagree = Object.values(this.#votes[voteId].results).filter((result) => result === 0)
-    if (agree.length > disagree.length && this.#votes[voteId].enoughVotes)
-      this[this.#votes[voteId].method](...this.#votes[voteId].args)
+    if (agree.length > disagree.length) this[this.#votes[voteId].method](...this.#votes[voteId].args)
     this.#votes[voteId].finished = true
   }
 
@@ -115,7 +115,7 @@ export default class Voting extends ContractCreator {
     }
   }
 
-  _sync() {
+  sync() {
     for (const vote of this.votesInProgress) {
       if (vote.endTime < new Date().getTime()) this.#endVoting(vote.id)
     }
