@@ -105,10 +105,12 @@ export default class Token extends Roles {
   }
 
   burn(from: address, amount: BigNumberish) {
-    if (!this.hasRole(msg.sender, 'BURN')) throw new Error('not allowed')
-
-    this.#totalSupply = this.#totalSupply.sub(amount)
-    this.#decreaseBalance(from, amount)
+    if (!this.hasRole(msg.sender, 'BURN') || msg.sender !== from) throw new Error('not allowed')
+    const total = this.#totalSupply.sub(amount)
+    if (total.gte(0)) {
+      this.#totalSupply = total
+      this.#decreaseBalance(from, amount)
+    }
   }
 
   #beforeTransfer(from: address, to: address, amount: BigNumberish) {
