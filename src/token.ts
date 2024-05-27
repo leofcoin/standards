@@ -2,6 +2,9 @@ import { restoreApprovals, restoreBalances } from './helpers.js'
 import Roles, { RolesState } from './roles.js'
 
 export declare interface TokenState extends RolesState {
+  name: string
+  symbol: string
+  decimals: number
   holders: BigNumberish
   balances: { [address: address]: BigNumberish }
   approvals: { [owner: address]: { [operator: address]: BigNumberish } }
@@ -34,6 +37,8 @@ export default class Token extends Roles {
 
   #totalSupply: typeof BigNumber = BigNumber['from'](0)
 
+  #stakingContract: address
+
   // this.#privateField2 = 1
   constructor(name: string, symbol: string, decimals: number = 18, state?: TokenState) {
     if (!name) throw new Error(`name undefined`)
@@ -46,6 +51,9 @@ export default class Token extends Roles {
       this.#approvals = restoreApprovals(state.approvals)
       this.#holders = BigNumber['from'](state.holders)
       this.#totalSupply = BigNumber['from'](state.totalSupply)
+      this.#name = name
+      this.#symbol = symbol
+      this.#decimals = decimals
     } else {
       this.#name = name
       this.#symbol = symbol
@@ -62,6 +70,9 @@ export default class Token extends Roles {
   get state(): TokenState {
     return {
       ...super.state,
+      name: this.#name,
+      symbol: this.#symbol,
+      decimals: this.#decimals,
       holders: this.holders,
       balances: this.balances,
       approvals: { ...this.#approvals },
