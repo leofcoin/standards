@@ -5,3 +5,4 @@ export { default as PublicVoting } from './public-voting.js';
 export { default as PrivateVoting } from './private-voting.js';
 export { restoreApprovals, restoreBalances } from './helpers.js';
 import './contract-creator.js';
+import './voting-xYjJlN2h.js';

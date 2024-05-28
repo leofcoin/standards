@@ -1,8 +1,5 @@
 import Roles, { RolesState } from './roles.js';
 export declare interface TokenState extends RolesState {
-    name: string;
-    symbol: string;
-    decimals: number;
     holders: BigNumberish;
     balances: {
         [address: address]: BigNumberish;

@@ -1,4 +1,5 @@
 import PublicVoting from './public-voting.js';
+import './voting-xYjJlN2h.js';
 import './contract-creator.js';
 
 class TokenReceiver extends PublicVoting {
@@ -57,7 +58,7 @@ class TokenReceiver extends PublicVoting {
         return msg.staticCall(this.tokenToReceive, 'transfer', [msg.sender, this.tokenReceiver, this.tokenAmountToReceive]);
     }
     async _beforeVote() {
-        await this.#beforeVote();
+        return this.#beforeVote();
     }
     /**
      * check if sender can pay

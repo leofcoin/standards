@@ -1,4 +1,4 @@
-import { IPublicVoting } from './voting/interfaces/i-public-voting.js';
+import { IVoting } from './voting/interfaces/i-voting.js';
 import PublicVoting, { PublicVotingState } from './voting/public-voting.js';
 export interface TokenReceiverState extends PublicVotingState {
     tokenToReceive: address;
@@ -6,7 +6,7 @@ export interface TokenReceiverState extends PublicVotingState {
     tokenAmountToReceive: typeof BigNumber;
     voteType: 'burn' | 'transfer';
 }
-export default class TokenReceiver extends PublicVoting implements IPublicVoting {
+export default class TokenReceiver extends PublicVoting implements IVoting {
     #private;
     constructor(tokenToReceive: address, tokenAmountToReceive: typeof BigNumber, burns: boolean, state?: TokenReceiverState);
     get tokenToReceive(): string;

@@ -25,6 +25,7 @@ class Token extends Roles {
     #approvals = {};
     #decimals = 18;
     #totalSupply = BigNumber['from'](0);
+    #stakingContract;
     // this.#privateField2 = 1
     constructor(name, symbol, decimals = 18, state) {
         if (!name)
@@ -37,6 +38,9 @@ class Token extends Roles {
             this.#approvals = restoreApprovals(state.approvals);
             this.#holders = BigNumber['from'](state.holders);
             this.#totalSupply = BigNumber['from'](state.totalSupply);
+            this.#name = name;
+            this.#symbol = symbol;
+            this.#decimals = decimals;
         }
         else {
             this.#name = name;
@@ -53,6 +57,9 @@ class Token extends Roles {
     get state() {
         return {
             ...super.state,
+            name: this.#name,
+            symbol: this.#symbol,
+            decimals: this.#decimals,
             holders: this.holders,
             balances: this.balances,
             approvals: { ...this.#approvals },
@@ -87,10 +94,13 @@ class Token extends Roles {
         this.#increaseBalance(to, amount);
     }
     burn(from, amount) {
-        if (!this.hasRole(msg.sender, 'BURN'))
+        if (!this.hasRole(msg.sender, 'BURN') || msg.sender !== from)
             throw new Error('not allowed');
-        this.#totalSupply = this.#totalSupply.sub(amount);
-        this.#decreaseBalance(from, amount);
+        const total = this.#totalSupply.sub(amount);
+        if (total.gte(0)) {
+            this.#totalSupply = total;
+            this.#decreaseBalance(from, amount);
+        }
     }
     #beforeTransfer(from, to, amount) {
         if (!this.#balances[from] || this.#balances[from] < amount)

@@ -1,104 +1,25 @@
-import ContractCreator from './contract-creator.js';
+import { V as Voting } from './voting-xYjJlN2h.js';
+import './contract-creator.js';
 
-class PrivateVoting extends ContractCreator {
+class PrivateVoting extends Voting {
     #voters;
-    #votes;
-    #votingDisabled;
-    #votingDuration = 172800000;
     constructor(state) {
         super(state);
         if (state) {
             this.#voters = state.voters;
-            this.#votes = state.votes;
-            this.#votingDisabled = state.votingDisabled;
-            this.#votingDuration = state.votingDuration;
         }
         else {
             this.#voters = [msg.sender];
         }
     }
-    get votes() {
-        return { ...this.#votes };
-    }
-    get voters() {
-        return { ...this.#voters };
-    }
-    get votingDisabled() {
-        return this.#votingDisabled;
-    }
-    /**
-     *
-     */
     get state() {
         return {
             ...super.state,
-            voters: this.#voters,
-            votes: this.#votes,
-            votingDisabled: this.#votingDisabled,
-            votingDuration: this.#votingDuration
+            voters: this.#voters
         };
     }
-    get inProgress() {
-        return Object.entries(this.#votes)
-            .filter(([id, vote]) => !vote.finished)
-            .map(([id, vote]) => {
-            return { ...vote, id };
-        });
-    }
-    /**
-     * create vote
-     * @param {string} vote
-     * @param {string} description
-     * @param {number} endTime
-     * @param {string} method function to run when agree amount is bigger
-     */
-    createVote(title, description, endTime, method, args = []) {
-        if (!this.canVote(msg.sender))
-            throw new Error(`Not allowed to create a vote`);
-        const id = crypto.randomUUID();
-        this.#votes[id] = {
-            title,
-            description,
-            method,
-            endTime,
-            args
-        };
-    }
-    canVote(address) {
-        return this.#voters.includes(address);
-    }
-    #enoughVotes(id) {
-        return this.#voters.length - 2 <= Object.keys(this.#votes[id]).length;
-    }
-    #endVoting(voteId) {
-        let agree = Object.values(this.#votes[voteId].results).filter((result) => result === 1);
-        let disagree = Object.values(this.#votes[voteId].results).filter((result) => result === 0);
-        this.#votes[voteId].enoughVotes = this.#enoughVotes(voteId);
-        if (agree.length > disagree.length && this.#votes[voteId].enoughVotes)
-            this[this.#votes[voteId].method](...this.#votes[voteId].args);
-        this.#votes[voteId].finished = true;
-    }
-    vote(voteId, vote) {
-        vote = Number(vote);
-        if (vote !== 0 && vote !== 0.5 && vote !== 1)
-            throw new Error(`invalid vote value ${vote}`);
-        if (!this.#votes[voteId])
-            throw new Error(`Nothing found for ${voteId}`);
-        const ended = new Date().getTime() > this.#votes[voteId].endTime;
-        if (ended && !this.#votes[voteId].finished)
-            this.#endVoting(voteId);
-        if (ended)
-            throw new Error('voting already ended');
-        if (!this.canVote(msg.sender))
-            throw new Error(`Not allowed to vote`);
-        this.#votes[voteId][msg.sender] = vote;
-        if (this.#enoughVotes(voteId)) {
-            this.#endVoting(voteId);
-        }
-    }
-    #disableVoting() {
-        this.#votingDisabled = true;
-        this.#voters = [];
+    _canVote() {
+        return this.#voters.includes(msg.sender);
     }
     #grantVotingPower(address) {
         this.#voters.push(address);
@@ -106,37 +27,22 @@ class PrivateVoting extends ContractCreator {
     #revokeVotingPower(address) {
         this.#voters.splice(this.#voters.indexOf(address));
     }
-    disableVoting() {
-        if (!this.canVote(msg.sender))
-            throw new Error('not a allowed');
-        if (this.#voters.length === 1)
-            this.#disableVoting();
-        else {
-            this.createVote(`disable voting`, `Warning this disables all voting features forever`, new Date().getTime() + this.#votingDuration, '#disableVoting', []);
-        }
-    }
     grantVotingPower(address, voteId) {
-        if (this.#voters.length === 1 && this.canVote(msg.sender))
+        if (this.#voters.length === 1 && this._canVote())
             this.#grantVotingPower(address);
         else {
-            this.createVote(`grant voting power to ${address}`, `Should we grant ${address} voting power?`, new Date().getTime() + this.#votingDuration, '#grantVotingPower', [address]);
+            this.createVote(`grant voting power to ${address}`, `Should we grant ${address} voting power?`, new Date().getTime() + this.votingDuration, '#grantVotingPower', [address]);
         }
     }
     revokeVotingPower(address, voteId) {
-        if (!this.canVote(msg.sender))
+        if (!this._canVote())
             throw new Error('not a allowed to vote');
-        if (this.#voters.length === 1 && address === msg.sender && !this.#votingDisabled)
+        if (this.#voters.length === 1 && address === msg.sender && !this.votingDisabled)
             throw new Error('only one voter left, disable voting before making this contract voteless');
         if (this.#voters.length === 1)
             this.#revokeVotingPower(address);
         else {
-            this.createVote(`revoke voting power for ${address}`, `Should we revoke ${address} it's voting power?`, new Date().getTime() + this.#votingDuration, '#revokeVotingPower', [address]);
-        }
-    }
-    sync() {
-        for (const vote of this.inProgress) {
-            if (vote.endTime < new Date().getTime())
-                this.#endVoting(vote.id);
+            this.createVote(`revoke voting power for ${address}`, `Should we revoke ${address} it's voting power?`, new Date().getTime() + this.votingDuration, '#revokeVotingPower', [address]);
         }
     }
 }
