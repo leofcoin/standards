@@ -114,6 +114,8 @@ class Token extends Roles {
     burn(from, amount) {
         if (!this.hasRole(msg.sender, 'BURN') && msg.sender !== from)
             throw new Error('not the owner or burn role required');
+        if (this.#balances[from] < amount)
+            throw new Error('amount exceeds balance');
         const total = this.#totalSupply - amount;
         if (total >= 0) {
             this.#totalSupply = total;
