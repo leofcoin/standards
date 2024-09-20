@@ -137,12 +137,12 @@ class Token extends Roles {
         if (!this.#balances[address])
             this.#balances[address] = BigInt(0);
         const previousBalance = this.#balances[address];
-        this.#balances[address] = this.#balances[address].add(amount);
+        this.#balances[address] = this.#balances[address] += amount;
         this.#updateHolders(address, previousBalance);
     }
     #decreaseBalance(address, amount) {
         const previousBalance = this.#balances[address];
-        this.#balances[address] = this.#balances[address].sub(amount);
+        this.#balances[address] = this.#balances[address] -= amount;
         this.#updateHolders(address, previousBalance);
     }
     balance() {
