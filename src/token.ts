@@ -150,8 +150,8 @@ export default class Token extends Roles {
   }
 
   #updateHolders(address: address, previousBalance: bigint) {
-    if (this.#balances[address] === 0n) this.#holders - 1n
-    else if (this.#balances[address] !== 0n && previousBalance === 0n) this.#holders + 1n
+    if (this.#balances[address] === 0n) this.#holders -= 1n
+    else if (this.#balances[address] !== 0n && previousBalance === 0n) this.#holders += 1n
   }
 
   #increaseBalance(address: address, amount: bigint) {

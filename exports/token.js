@@ -129,9 +129,9 @@ class Token extends Roles {
     }
     #updateHolders(address, previousBalance) {
         if (this.#balances[address] === 0n)
-            this.#holders - 1n;
+            this.#holders -= 1n;
         else if (this.#balances[address] !== 0n && previousBalance === 0n)
-            this.#holders + 1n;
+            this.#holders += 1n;
     }
     #increaseBalance(address, amount) {
         if (!this.#balances[address])
