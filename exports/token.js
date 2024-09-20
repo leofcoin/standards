@@ -95,7 +95,7 @@ class Token extends Roles {
     }
     mint(to, amount) {
         if (!this.hasRole(msg.sender, 'MINT'))
-            throw new Error('not allowed');
+            throw new Error('mint role required');
         const supply = this.#totalSupply + amount;
         if (this.#maxSupply === 0n) {
             this.#totalSupply = supply;
@@ -112,8 +112,8 @@ class Token extends Roles {
         }
     }
     burn(from, amount) {
-        if (!this.hasRole(msg.sender, 'BURN') || msg.sender !== from)
-            throw new Error('not allowed');
+        if (!this.hasRole(msg.sender, 'BURN') && msg.sender !== from)
+            throw new Error('not the owner or burn role required');
         const total = this.#totalSupply - amount;
         if (total >= 0) {
             this.#totalSupply = total;
