@@ -1,3 +1,4 @@
+/// <reference types="@leofcoin/types/global" />
 import ContractCreator, { ContractCreatorState } from './contract-creator.js';
 export interface RolesState extends ContractCreatorState {
     roles: {

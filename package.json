@@ -48,7 +48,7 @@
   },
   "scripts": {
     "build": "rollup -c",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha --require ts-node/register test/**/*.ts"
   },
   "repository": {
     "type": "git",
@@ -62,13 +62,11 @@
   },
   "homepage": "https://github.com/ArteonToken/standards#readme",
   "devDependencies": {
-    "@changesets/cli": "^2.27.7",
-    "@leofcoin/global-types": "^1.0.0",
+    "@leofcoin/types": "^1.0.17",
     "@rollup/plugin-typescript": "^11.1.6",
-    "rollup": "^4.12.0",
-    "tslib": "^2.5.0"
-  },
-  "dependencies": {
-    "@ethersproject/bignumber": "^5.7.0"
+    "chai": "^5.1.1",
+    "mocha": "^10.7.3",
+    "rollup": "^4.22.1",
+    "tslib": "^2.7.0"
   }
 }

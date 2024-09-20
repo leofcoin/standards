@@ -5,7 +5,8 @@
     "outDir": "./exports",
     "moduleResolution": "NodeNext",
     "declaration": true,
-    "declarationDir": "./exports"
+    "declarationDir": "./exports",
+    "types": ["@leofcoin/types/global"]
   },
-  "include": ["./src/*", "./node_modules/@leofcoin/global-types/*"]
+  "include": ["./src/*"]
 }

@@ -1,21 +1,22 @@
+/// <reference types="@leofcoin/types/global" />
 import { IVoting } from './voting/interfaces/i-voting.js';
 import PublicVoting, { PublicVotingState } from './voting/public-voting.js';
 export interface TokenReceiverState extends PublicVotingState {
     tokenToReceive: address;
     tokenReceiver: address;
-    tokenAmountToReceive: typeof BigNumber;
+    tokenAmountToReceive: bigint;
     voteType: 'burn' | 'transfer';
 }
 export default class TokenReceiver extends PublicVoting implements IVoting {
     #private;
-    constructor(tokenToReceive: address, tokenAmountToReceive: typeof BigNumber, burns: boolean, state?: TokenReceiverState);
+    constructor(tokenToReceive: address, tokenAmountToReceive: bigint, burns: boolean, state?: TokenReceiverState);
     get tokenToReceive(): string;
-    get tokenAmountToReceive(): import("@ethersproject/bignumber").BigNumber;
+    get tokenAmountToReceive(): bigint;
     get tokenReceiver(): string;
     get state(): {
         tokenReceiver: string;
         tokenToReceive: string;
-        tokenAmountToReceive: import("@ethersproject/bignumber").BigNumber;
+        tokenAmountToReceive: bigint;
         voteType: "burn" | "transfer";
         votes: {
             [id: string]: import("./voting/types.js").Vote;
@@ -42,7 +43,7 @@ export default class TokenReceiver extends PublicVoting implements IVoting {
     _burnTokenToReceive(): Promise<boolean>;
     _canPay(): Promise<any>;
     changeVoteType(type: TokenReceiverState['voteType']): Promise<void>;
-    getTokensOut(amount: typeof BigNumber, receiver: address): void;
+    getTokensOut(amount: bigint, receiver: address): void;
     changeTokenAmountToReceive(): void;
     changeTokenToReceive(): Promise<void>;
 }

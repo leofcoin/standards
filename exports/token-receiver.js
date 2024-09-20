@@ -12,13 +12,13 @@ class TokenReceiver extends PublicVoting {
         if (state) {
             this.#tokenReceiver = state.tokenReceiver;
             this.#tokenToReceive = state.tokenToReceive;
-            this.#tokenAmountToReceive = BigNumber['from'](state.tokenAmountToReceive);
+            this.#tokenAmountToReceive = BigInt(state.tokenAmountToReceive);
             this.#voteType = state.voteType;
         }
         else {
             this.#tokenReceiver = msg.contract;
             this.#tokenToReceive = tokenToReceive;
-            this.#tokenAmountToReceive = BigNumber['from'](tokenAmountToReceive);
+            this.#tokenAmountToReceive = BigInt(tokenAmountToReceive);
             if (burns)
                 this.#voteType = 'burn';
         }
@@ -43,7 +43,7 @@ class TokenReceiver extends PublicVoting {
     }
     async #canVote() {
         const amount = (await msg.staticCall(this.#tokenToReceive, 'balanceOf', [msg.sender]));
-        return amount.gte(this.#tokenAmountToReceive);
+        return amount >= this.#tokenAmountToReceive;
     }
     /**
      * check if sender can pay
@@ -97,7 +97,7 @@ class TokenReceiver extends PublicVoting {
     async changeVoteType(type) {
         if (!this.#canVote())
             throw new Error('not a allowed');
-        if (this.#voteType === 'transfer' && (await this.#balance()).gt(0))
+        if (this.#voteType === 'transfer' && (await this.#balance()) > 0n)
             throw new Error('get tokens out first or they be lost forever');
         else {
             this.createVote(`change the token amount to receive`, `set tokenAmountToReceive`, new Date().getTime() + this.votingDuration, '#changeVoteType', [type]);
@@ -123,7 +123,7 @@ class TokenReceiver extends PublicVoting {
     async changeTokenToReceive() {
         if (!this.#canVote())
             throw new Error('not a allowed');
-        if (!(await this.#balance()).eq(0) && this.#voteType === 'transfer')
+        if ((await this.#balance()) > 0n && this.#voteType === 'transfer')
             throw new Error('get tokens out first or they be lost forever');
         else {
             this.createVote(`change the token to receive`, `set tokenToReceive to a new address`, new Date().getTime() + this.votingDuration, '#changeTokenToReceive', []);

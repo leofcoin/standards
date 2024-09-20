@@ -1,18 +1,20 @@
+/// <reference types="@leofcoin/types/global" />
 import Roles, { RolesState } from './roles.js';
 export declare interface TokenState extends RolesState {
     name: string;
     symbol: string;
     decimals: number;
-    holders: BigNumberish;
+    holders: bigint;
     balances: {
-        [address: address]: BigNumberish;
+        [address: address]: bigint;
     };
     approvals: {
         [owner: address]: {
-            [operator: address]: BigNumberish;
+            [operator: address]: bigint;
         };
     };
-    totalSupply: BigNumberish;
+    totalSupply: bigint;
+    maxSupply: bigint;
 }
 export default class Token extends Roles {
     #private;
@@ -21,22 +23,19 @@ export default class Token extends Roles {
      * @return {Object} {holders, balances, ...}
      */
     get state(): TokenState;
-    get totalSupply(): BigNumberish;
-    get name(): string;
-    get symbol(): string;
+    get maxSupply(): TokenState['maxSupply'];
+    get totalSupply(): TokenState['totalSupply'];
+    get name(): TokenState['name'];
+    get symbol(): TokenState['symbol'];
     get holders(): TokenState['holders'];
     get balances(): TokenState['balances'];
-    get approvals(): {
-        [owner: string]: {
-            [operator: string]: import("@ethersproject/bignumber").BigNumber;
-        };
-    };
-    get decimals(): number;
-    mint(to: address, amount: BigNumberish): void;
-    burn(from: address, amount: BigNumberish): void;
+    get approvals(): TokenState['approvals'];
+    get decimals(): TokenState['decimals'];
+    mint(to: address, amount: bigint): void;
+    burn(from: address, amount: bigint): void;
     balance(): any;
-    balanceOf(address: address): BigNumberish;
-    setApproval(operator: address, amount: BigNumberish): void;
-    approved(owner: address, operator: address, amount: BigNumberish): boolean;
-    transfer(from: address, to: address, amount: BigNumberish): void;
+    balanceOf(address: address): bigint;
+    setApproval(operator: address, amount: bigint): void;
+    approved(owner: address, operator: address, amount: bigint): boolean;
+    transfer(from: address, to: address, amount: bigint): void;
 }

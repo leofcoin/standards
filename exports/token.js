@@ -14,7 +14,7 @@ class Token extends Roles {
     /**
      * uint
      */
-    #holders = BigNumber['from'](0);
+    #holders = BigInt(0);
     /**
      * Object => Object => uint
      */
@@ -24,9 +24,9 @@ class Token extends Roles {
      */
     #approvals = {};
     #decimals = 18;
-    #totalSupply = BigNumber['from'](0);
+    #totalSupply = BigInt(0);
+    #maxSupply = BigInt(0);
     #stakingContract;
-    // this.#privateField2 = 1
     constructor(name, symbol, decimals = 18, state) {
         if (!name)
             throw new Error(`name undefined`);
@@ -36,11 +36,12 @@ class Token extends Roles {
         if (state) {
             this.#balances = restoreBalances(state.balances);
             this.#approvals = restoreApprovals(state.approvals);
-            this.#holders = BigNumber['from'](state.holders);
-            this.#totalSupply = BigNumber['from'](state.totalSupply);
+            this.#holders = BigInt(state.holders);
+            this.#totalSupply = BigInt(state.totalSupply);
             this.#name = name;
             this.#symbol = symbol;
             this.#decimals = decimals;
+            this.#maxSupply = BigInt(state.maxSupply);
         }
         else {
             this.#name = name;
@@ -51,6 +52,7 @@ class Token extends Roles {
     // enables snapshotting
     // needs dev attention so nothing breaks after snapshot happens
     // iow everything that is not static needs to be included in the stateObject
+    // TODO: implement snapshotting test
     /**
      * @return {Object} {holders, balances, ...}
      */
@@ -63,8 +65,12 @@ class Token extends Roles {
             holders: this.holders,
             balances: this.balances,
             approvals: { ...this.#approvals },
-            totalSupply: this.totalSupply
+            totalSupply: this.totalSupply,
+            maxSupply: this.#maxSupply
         };
+    }
+    get maxSupply() {
+        return this.#maxSupply;
     }
     get totalSupply() {
         return this.#totalSupply;
@@ -90,16 +96,31 @@ class Token extends Roles {
     mint(to, amount) {
         if (!this.hasRole(msg.sender, 'MINT'))
             throw new Error('not allowed');
-        this.#totalSupply = this.#totalSupply.add(amount);
-        this.#increaseBalance(to, amount);
+        const supply = this.#totalSupply + amount;
+        if (this.#maxSupply === 0n) {
+            this.#totalSupply = supply;
+            this.#increaseBalance(to, amount);
+        }
+        else {
+            if (supply <= this.#maxSupply) {
+                this.#totalSupply = supply;
+                this.#increaseBalance(to, amount);
+            }
+            else {
+                throw new Error('amount exceeds max supply');
+            }
+        }
     }
     burn(from, amount) {
         if (!this.hasRole(msg.sender, 'BURN') || msg.sender !== from)
             throw new Error('not allowed');
-        const total = this.#totalSupply.sub(amount);
-        if (total.gte(0)) {
+        const total = this.#totalSupply - amount;
+        if (total >= 0) {
             this.#totalSupply = total;
             this.#decreaseBalance(from, amount);
+        }
+        else {
+            throw new Error('amount exceeds total supply');
         }
     }
     #beforeTransfer(from, to, amount) {
@@ -107,14 +128,14 @@ class Token extends Roles {
             throw new Error('amount exceeds balance');
     }
     #updateHolders(address, previousBalance) {
-        if (this.#balances[address].toHexString() === '0x00')
-            this.#holders.sub(1);
-        else if (this.#balances[address].toHexString() !== '0x00' && previousBalance.toHexString() === '0x00')
-            this.#holders.add(1);
+        if (this.#balances[address] === 0n)
+            this.#holders - 1n;
+        else if (this.#balances[address] !== 0n && previousBalance === 0n)
+            this.#holders + 1n;
     }
     #increaseBalance(address, amount) {
         if (!this.#balances[address])
-            this.#balances[address] = BigNumber['from'](0);
+            this.#balances[address] = BigInt(0);
         const previousBalance = this.#balances[address];
         this.#balances[address] = this.#balances[address].add(amount);
         this.#updateHolders(address, previousBalance);
@@ -134,14 +155,14 @@ class Token extends Roles {
         const owner = msg.sender;
         if (!this.#approvals[owner])
             this.#approvals[owner] = {};
-        this.#approvals[owner][operator] = BigNumber['from'](amount);
+        this.#approvals[owner][operator] = BigInt(amount);
     }
     approved(owner, operator, amount) {
         return this.#approvals[owner][operator] === amount;
     }
     transfer(from, to, amount) {
-        // TODO: is BigNumber?
-        amount = BigNumber['from'](amount);
+        // TODO: is bigint?
+        amount = BigInt(amount);
         this.#beforeTransfer(from, to, amount);
         this.#decreaseBalance(from, amount);
         this.#increaseBalance(to, amount);

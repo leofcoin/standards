@@ -1,3 +1,4 @@
+/// <reference types="@leofcoin/types/global" />
 export type ContractCreatorState = {
     contractCreator: address;
 };

@@ -1,29 +1,26 @@
 /// <reference types="@leofcoin/types/global" />
-import Roles, { RolesState } from './roles.js';
-export declare interface TokenState extends RolesState {
+import { RolesState } from './roles.js';
+import { IVoting } from './voting/interfaces/i-voting.js';
+import PublicVoting from './voting/public-voting.js';
+export declare interface LockState extends RolesState {
     holders: bigint;
     balances: {
         [address: address]: bigint;
     };
-    approvals: {
-        [owner: address]: {
-            [operator: address]: bigint;
-        };
-    };
     totalSupply: bigint;
 }
-export default class Staking extends Roles {
+export default class Lock extends PublicVoting implements IVoting {
     #private;
-    constructor(name: string, symbol: string, decimals?: number, state?: TokenState);
+    constructor(name: string, symbol: string, decimals?: number, state?: LockState);
     /**
      * @return {Object} {holders, balances, ...}
      */
-    get state(): TokenState;
+    get state(): LockState;
     get totalSupply(): bigint;
     get name(): string;
     get symbol(): string;
-    get holders(): TokenState['holders'];
-    get balances(): TokenState['balances'];
+    get holders(): LockState['holders'];
+    get balances(): LockState['balances'];
     get approvals(): {
         [owner: string]: {
             [operator: string]: bigint;

@@ -1,3 +1,4 @@
+/// <reference types="@leofcoin/types/global" />
 import { ContractCreatorState } from '../contract-creator.js';
 import { IVoting } from './interfaces/i-voting.js';
 import { VotingState } from './types.js';
