@@ -8,5 +8,5 @@
     "declarationDir": "./exports",
     "types": ["@leofcoin/types/global"]
   },
-  "include": ["./src/*"]
+  "include": ["./src/**/*.ts"]
 }

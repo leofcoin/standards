@@ -32,8 +32,11 @@
       "import": "./exports/token-receiver.js",
       "types": "./exports/token-receiver.d.ts"
     },
-    "./interfaces/i-public-voting": {
-      "types": "./exports/voting/interfaces/i-public-voting.d.ts"
+    "./interfaces/i-voting": {
+      "types": "./exports/voting/interfaces/i-voting.d.ts"
+    },
+    "./interfaces/i-token": {
+      "types": "./exports/interfaces/i-token.d.ts"
     },
     "./helpers": {
       "import": "./exports/helpers.js",
