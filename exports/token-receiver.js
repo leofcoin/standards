@@ -11,13 +11,13 @@ class TokenReceiver extends PublicVoting {
         if (state) {
             this.#tokenReceiver = state.tokenReceiver;
             this.#tokenToReceive = state.tokenToReceive;
-            this.#tokenAmountToReceive = BigNumber['from'](state.tokenAmountToReceive);
+            this.#tokenAmountToReceive = BigInt(state.tokenAmountToReceive);
             this.#voteType = state.voteType;
         }
         else {
             this.#tokenReceiver = msg.contract;
             this.#tokenToReceive = tokenToReceive;
-            this.#tokenAmountToReceive = BigNumber['from'](tokenAmountToReceive);
+            this.#tokenAmountToReceive = BigInt(tokenAmountToReceive);
             if (burns)
                 this.#voteType = 'burn';
         }
@@ -41,8 +41,10 @@ class TokenReceiver extends PublicVoting {
         };
     }
     async #canVote() {
-        const amount = (await msg.staticCall(this.#tokenToReceive, 'balanceOf', [msg.sender]));
-        return amount.gte(this.#tokenAmountToReceive);
+        const amount = (await msg.staticCall(this.#tokenToReceive, 'balanceOf', [
+            msg.sender
+        ]));
+        return amount >= this.#tokenAmountToReceive;
     }
     /**
      * check if sender can pay
@@ -53,8 +55,14 @@ class TokenReceiver extends PublicVoting {
     }
     async #beforeVote() {
         if (this.#voteType === 'burn')
-            return msg.staticCall(this.tokenToReceive, 'burn', [this.tokenAmountToReceive]);
-        return msg.staticCall(this.tokenToReceive, 'transfer', [msg.sender, this.tokenReceiver, this.tokenAmountToReceive]);
+            return msg.staticCall(this.tokenToReceive, 'burn', [
+                this.tokenAmountToReceive
+            ]);
+        return msg.staticCall(this.tokenToReceive, 'transfer', [
+            msg.sender,
+            this.tokenReceiver,
+            this.tokenAmountToReceive
+        ]);
     }
     async _beforeVote() {
         await this.#beforeVote();
@@ -75,7 +83,9 @@ class TokenReceiver extends PublicVoting {
      * @returns {boolean} promise
      */
     async _burnTokenToReceive() {
-        return msg.staticCall(this.#tokenToReceive, 'burn', [this.#tokenAmountToReceive]);
+        return msg.staticCall(this.#tokenToReceive, 'burn', [
+            this.#tokenAmountToReceive
+        ]);
     }
     #changeTokenToReceive(address) {
         this.#tokenToReceive = address;
@@ -87,12 +97,16 @@ class TokenReceiver extends PublicVoting {
         this.#voteType = type;
     }
     #getTokensOut(amount, receiver) {
-        return msg.call(this.#tokenReceiver, 'transfer', [this.#tokenReceiver, receiver, amount]);
+        return msg.call(this.#tokenReceiver, 'transfer', [
+            this.#tokenReceiver,
+            receiver,
+            amount
+        ]);
     }
     async changeVoteType(type) {
         if (!this.#canVote())
             throw new Error('not a allowed');
-        if (this.#voteType === 'transfer' && (await this.#balance()).gt(0))
+        if (this.#voteType === 'transfer' && (await this.#balance()) > 0n)
             throw new Error('get tokens out first or they be lost forever');
         else {
             this.createVote(`change the token amount to receive`, `set tokenAmountToReceive`, new Date().getTime() + this.votingDuration, '#changeVoteType', [type]);
@@ -113,12 +127,14 @@ class TokenReceiver extends PublicVoting {
         }
     }
     #balance() {
-        return msg.staticCall(this.#tokenToReceive, 'balanceOf', [this.#tokenReceiver]);
+        return msg.staticCall(this.#tokenToReceive, 'balanceOf', [
+            this.#tokenReceiver
+        ]);
     }
     async changeTokenToReceive() {
         if (!this.#canVote())
             throw new Error('not a allowed');
-        if (!(await this.#balance()).eq(0) && this.#voteType === 'transfer')
+        if ((await this.#balance()) !== 0n && this.#voteType === 'transfer')
             throw new Error('get tokens out first or they be lost forever');
         else {
             this.createVote(`change the token to receive`, `set tokenToReceive to a new address`, new Date().getTime() + this.votingDuration, '#changeTokenToReceive', []);

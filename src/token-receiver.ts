@@ -5,18 +5,21 @@ import { VotingState } from './voting/types.js'
 export interface TokenReceiverState extends VotingState {
   tokenToReceive: address
   tokenReceiver: address
-  tokenAmountToReceive: typeof BigNumber
+  tokenAmountToReceive: bigint
   voteType: 'burn' | 'transfer'
 }
-export default class TokenReceiver extends PublicVoting implements IPublicVoting {
+export default class TokenReceiver
+  extends PublicVoting
+  implements IPublicVoting
+{
   #tokenToReceive: address
-  #tokenAmountToReceive: typeof BigNumber
+  #tokenAmountToReceive: bigint
   #tokenReceiver: address
   #voteType: TokenReceiverState['voteType'] = 'transfer'
 
   constructor(
     tokenToReceive: address,
-    tokenAmountToReceive: typeof BigNumber,
+    tokenAmountToReceive: bigint,
     burns: boolean,
     state?: TokenReceiverState
   ) {
@@ -24,12 +27,12 @@ export default class TokenReceiver extends PublicVoting implements IPublicVoting
     if (state) {
       this.#tokenReceiver = state.tokenReceiver
       this.#tokenToReceive = state.tokenToReceive
-      this.#tokenAmountToReceive = BigNumber['from'](state.tokenAmountToReceive)
+      this.#tokenAmountToReceive = BigInt(state.tokenAmountToReceive)
       this.#voteType = state.voteType
     } else {
       this.#tokenReceiver = msg.contract
       this.#tokenToReceive = tokenToReceive
-      this.#tokenAmountToReceive = BigNumber['from'](tokenAmountToReceive)
+      this.#tokenAmountToReceive = BigInt(tokenAmountToReceive)
       if (burns) this.#voteType = 'burn'
     }
   }
@@ -57,8 +60,10 @@ export default class TokenReceiver extends PublicVoting implements IPublicVoting
   }
 
   async #canVote() {
-    const amount = (await msg.staticCall(this.#tokenToReceive, 'balanceOf', [msg.sender])) as typeof BigNumber
-    return amount.gte(this.#tokenAmountToReceive)
+    const amount = (await msg.staticCall(this.#tokenToReceive, 'balanceOf', [
+      msg.sender
+    ])) as bigint
+    return amount >= this.#tokenAmountToReceive
   }
 
   /**
@@ -70,8 +75,15 @@ export default class TokenReceiver extends PublicVoting implements IPublicVoting
   }
 
   async #beforeVote(): Promise<any> {
-    if (this.#voteType === 'burn') return msg.staticCall(this.tokenToReceive, 'burn', [this.tokenAmountToReceive])
-    return msg.staticCall(this.tokenToReceive, 'transfer', [msg.sender, this.tokenReceiver, this.tokenAmountToReceive])
+    if (this.#voteType === 'burn')
+      return msg.staticCall(this.tokenToReceive, 'burn', [
+        this.tokenAmountToReceive
+      ])
+    return msg.staticCall(this.tokenToReceive, 'transfer', [
+      msg.sender,
+      this.tokenReceiver,
+      this.tokenAmountToReceive
+    ])
   }
 
   async _beforeVote(): Promise<any> {
@@ -95,14 +107,16 @@ export default class TokenReceiver extends PublicVoting implements IPublicVoting
    * @returns {boolean} promise
    */
   async _burnTokenToReceive(): Promise<boolean> {
-    return msg.staticCall(this.#tokenToReceive, 'burn', [this.#tokenAmountToReceive])
+    return msg.staticCall(this.#tokenToReceive, 'burn', [
+      this.#tokenAmountToReceive
+    ])
   }
 
   #changeTokenToReceive(address: address) {
     this.#tokenToReceive = address
   }
 
-  #changeTokenAmountToReceive(amount: typeof BigNumber) {
+  #changeTokenAmountToReceive(amount: bigint) {
     this.#tokenAmountToReceive = amount
   }
 
@@ -110,13 +124,17 @@ export default class TokenReceiver extends PublicVoting implements IPublicVoting
     this.#voteType = type
   }
 
-  #getTokensOut(amount: typeof BigNumber, receiver: address) {
-    return msg.call(this.#tokenReceiver, 'transfer', [this.#tokenReceiver, receiver, amount])
+  #getTokensOut(amount: bigint, receiver: address) {
+    return msg.call(this.#tokenReceiver, 'transfer', [
+      this.#tokenReceiver,
+      receiver,
+      amount
+    ])
   }
 
   async changeVoteType(type: TokenReceiverState['voteType']) {
     if (!this.#canVote()) throw new Error('not a allowed')
-    if (this.#voteType === 'transfer' && (await this.#balance()).gt(0))
+    if (this.#voteType === 'transfer' && (await this.#balance()) > 0n)
       throw new Error('get tokens out first or they be lost forever')
     else {
       this.createVote(
@@ -129,7 +147,7 @@ export default class TokenReceiver extends PublicVoting implements IPublicVoting
     }
   }
 
-  getTokensOut(amount: typeof BigNumber, receiver: address) {
+  getTokensOut(amount: bigint, receiver: address) {
     if (!this.#canVote()) throw new Error('not a allowed')
     else {
       this.createVote(
@@ -155,13 +173,15 @@ export default class TokenReceiver extends PublicVoting implements IPublicVoting
     }
   }
 
-  #balance(): Promise<typeof BigNumber> {
-    return msg.staticCall(this.#tokenToReceive, 'balanceOf', [this.#tokenReceiver])
+  #balance(): Promise<bigint> {
+    return msg.staticCall(this.#tokenToReceive, 'balanceOf', [
+      this.#tokenReceiver
+    ])
   }
 
   async changeTokenToReceive() {
     if (!this.#canVote()) throw new Error('not a allowed')
-    if (!(await this.#balance()).eq(0) && this.#voteType === 'transfer')
+    if ((await this.#balance()) !== 0n && this.#voteType === 'transfer')
       throw new Error('get tokens out first or they be lost forever')
     else {
       this.createVote(

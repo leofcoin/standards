@@ -63,9 +63,5 @@
     "@rollup/plugin-typescript": "^12.3.0",
     "rollup": "^4.54.0",
     "tslib": "^2.8.1"
-  },
-  "dependencies": {
-    "@changesets/cli": "^2.29.8",
-    "@ethersproject/bignumber": "^5.8.0"
   }
 }
