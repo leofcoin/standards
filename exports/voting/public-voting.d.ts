@@ -7,7 +7,7 @@ export default class PublicVoting extends Meta {
     #private;
     constructor(state: VotingState);
     get votes(): {
-        [x: string]: import("./types.js").Vote;
+        [id: string]: import("./types.js").Vote;
     };
     get votingDuration(): number;
     get votingDisabled(): boolean;
@@ -27,7 +27,7 @@ export default class PublicVoting extends Meta {
         method: string;
         args: any[];
         description: string;
-        endTime: number;
+        endTime: EpochTimeStamp;
         results?: {
             [address: string]: VoteResult;
         };
