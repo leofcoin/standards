@@ -1,11 +1,14 @@
+import { M as Meta } from './meta-D7uruGOw.js';
+
 /**
- * allows everybody that has a balance greater or equeal then/to tokenAmountToReceive to vote
+ * allows everybody that has a balance greater or equal to tokenAmountToReceive to vote
  */
-class PublicVoting {
+class PublicVoting extends Meta {
     #votes;
     #votingDisabled;
     #votingDuration = 172800000;
     constructor(state) {
+        super(state);
         if (state) {
             this.#votes = state.votes;
             this.#votingDisabled = state.votingDisabled;
@@ -24,7 +27,12 @@ class PublicVoting {
      *
      */
     get state() {
-        return { votes: this.#votes, votingDisabled: this.#votingDisabled, votingDuration: this.#votingDuration };
+        return {
+            ...super.state,
+            votes: this.#votes,
+            votingDisabled: this.#votingDisabled,
+            votingDuration: this.#votingDuration
+        };
     }
     get inProgress() {
         return Object.entries(this.#votes)

@@ -1,8 +1,11 @@
-class PrivateVoting {
+import { M as Meta } from './meta-D7uruGOw.js';
+
+class PrivateVoting extends Meta {
     #voters;
     #votes;
     #votingDisabled;
     constructor(state) {
+        super(state);
         if (state) {
             this.#voters = state.voters;
             this.#votes = state.votes;
@@ -25,7 +28,12 @@ class PrivateVoting {
      *
      */
     get state() {
-        return { voters: this.#voters, votes: this.#votes, votingDisabled: this.#votingDisabled };
+        return {
+            ...super.state,
+            voters: this.#voters,
+            votes: this.#votes,
+            votingDisabled: this.#votingDisabled
+        };
     }
     get inProgress() {
         return Object.entries(this.#votes)
@@ -114,7 +122,9 @@ class PrivateVoting {
     revokeVotingPower(address, voteId) {
         if (!this.canVote(msg.sender))
             throw new Error('not a allowed to vote');
-        if (this.#voters.length === 1 && address === msg.sender && !this.#votingDisabled)
+        if (this.#voters.length === 1 &&
+            address === msg.sender &&
+            !this.#votingDisabled)
             throw new Error('only one voter left, disable voting before making this contract voteless');
         if (this.#voters.length === 1)
             this.#revokeVotingPower(address);

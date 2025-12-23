@@ -1,8 +1,8 @@
-export default class Roles {
+import Meta from './meta.js';
+import { RolesState } from './types.js';
+export default class Roles extends Meta {
     #private;
-    constructor(roles: {
-        [index: string]: address[];
-    });
+    constructor(state?: RolesState);
     /**
      *
      */

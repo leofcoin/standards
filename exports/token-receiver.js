@@ -1,4 +1,5 @@
 import PublicVoting from './public-voting.js';
+import './meta-D7uruGOw.js';
 
 class TokenReceiver extends PublicVoting {
     #tokenToReceive;

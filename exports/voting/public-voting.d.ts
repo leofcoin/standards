@@ -1,8 +1,9 @@
+import Meta from '../meta.js';
 import { VotingState, VoteResult } from './types.js';
 /**
- * allows everybody that has a balance greater or equeal then/to tokenAmountToReceive to vote
+ * allows everybody that has a balance greater or equal to tokenAmountToReceive to vote
  */
-export default class PublicVoting {
+export default class PublicVoting extends Meta {
     #private;
     constructor(state: VotingState);
     get votes(): {
