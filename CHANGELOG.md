@@ -1,6 +1,6 @@
 # @leofcoin/standards
 
-## Unreleased
+## 0.3.0
 
 ### Changed
 
@@ -9,7 +9,7 @@
 
 ### Added
 
-- GitHub Actions workflow for automated testing across Node.js versions 18.x, 20.x, 22.x
+- GitHub Actions workflow for automated testing across Node.js versions 22.x and latest
 - Test status badge in README
 - Comprehensive unit tests for helpers, roles, token, and voting modules
 - Meta base class for state management
