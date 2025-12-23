@@ -1,15 +1,18 @@
-import { VoteResult, VoteView, VotingState } from './types.js'
+import Meta from '../meta.js'
+import {
+  PrivateVotingState,
+  VoteResult,
+  VoteView,
+  VotingState
+} from './types.js'
 
-export interface PrivateVotingState extends VotingState {
-  voters
-}
-
-export default class PrivateVoting {
+export default class PrivateVoting extends Meta {
   #voters: PrivateVotingState['voters']
   #votes: PrivateVotingState['votes']
   #votingDisabled: boolean
 
   constructor(state: PrivateVotingState) {
+    super(state)
     if (state) {
       this.#voters = state.voters
       this.#votes = state.votes
@@ -35,7 +38,12 @@ export default class PrivateVoting {
    *
    */
   get state(): {} {
-    return { voters: this.#voters, votes: this.#votes, votingDisabled: this.#votingDisabled }
+    return {
+      ...super.state,
+      voters: this.#voters,
+      votes: this.#votes,
+      votingDisabled: this.#votingDisabled
+    }
   }
 
   get inProgress(): VoteView[] {
@@ -53,8 +61,15 @@ export default class PrivateVoting {
    * @param {string} method function to run when agree amount is bigger
    */
 
-  createVote(title: string, description: string, endTime: EpochTimeStamp, method: string, args: any[] = []) {
-    if (!this.canVote(msg.sender)) throw new Error(`Not allowed to create a vote`)
+  createVote(
+    title: string,
+    description: string,
+    endTime: EpochTimeStamp,
+    method: string,
+    args: any[] = []
+  ) {
+    if (!this.canVote(msg.sender))
+      throw new Error(`Not allowed to create a vote`)
     const id = crypto.randomUUID()
     this.#votes[id] = {
       title,
@@ -74,8 +89,12 @@ export default class PrivateVoting {
   }
 
   #endVoting(voteId) {
-    let agree = Object.values(this.#votes[voteId].results).filter((result) => result === 1)
-    let disagree = Object.values(this.#votes[voteId].results).filter((result) => result === 0)
+    let agree = Object.values(this.#votes[voteId].results).filter(
+      (result) => result === 1
+    )
+    let disagree = Object.values(this.#votes[voteId].results).filter(
+      (result) => result === 0
+    )
     this.#votes[voteId].enoughVotes = this.#enoughVotes(voteId)
     if (agree.length > disagree.length && this.#votes[voteId].enoughVotes)
       this[this.#votes[voteId].method](...this.#votes[voteId].args)
@@ -84,7 +103,8 @@ export default class PrivateVoting {
 
   vote(voteId: string, vote: VoteResult) {
     vote = Number(vote) as VoteResult
-    if (vote !== 0 && vote !== 0.5 && vote !== 1) throw new Error(`invalid vote value ${vote}`)
+    if (vote !== 0 && vote !== 0.5 && vote !== 1)
+      throw new Error(`invalid vote value ${vote}`)
     if (!this.#votes[voteId]) throw new Error(`Nothing found for ${voteId}`)
     const ended = new Date().getTime() > this.#votes[voteId].endTime
     if (ended && !this.#votes[voteId].finished) this.#endVoting(voteId)
@@ -124,7 +144,8 @@ export default class PrivateVoting {
   }
 
   grantVotingPower(address: address, voteId: string) {
-    if (this.#voters.length === 1 && this.canVote(msg.sender)) this.#grantVotingPower(address)
+    if (this.#voters.length === 1 && this.canVote(msg.sender))
+      this.#grantVotingPower(address)
     else {
       this.createVote(
         `grant voting power to ${address}`,
@@ -138,8 +159,14 @@ export default class PrivateVoting {
 
   revokeVotingPower(address: address, voteId: string) {
     if (!this.canVote(msg.sender)) throw new Error('not a allowed to vote')
-    if (this.#voters.length === 1 && address === msg.sender && !this.#votingDisabled)
-      throw new Error('only one voter left, disable voting before making this contract voteless')
+    if (
+      this.#voters.length === 1 &&
+      address === msg.sender &&
+      !this.#votingDisabled
+    )
+      throw new Error(
+        'only one voter left, disable voting before making this contract voteless'
+      )
     if (this.#voters.length === 1) this.#revokeVotingPower(address)
     else {
       this.createVote(

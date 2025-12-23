@@ -1,21 +1,21 @@
-export default class Roles {
+import Meta from './meta.js'
+import { RolesState } from './types.js'
+
+export default class Roles extends Meta {
   /**
    * Object => Array
    */
-  #roles = {
+  #roles: { [index: string]: address[] } = {
     OWNER: [],
     MINT: [],
     BURN: []
   }
 
-  constructor(roles: { [index: string]: address[] }) {
-    // allow devs to set their own roles but always keep the default ones included
-    // also allows roles to be loaded from the stateStore
-    // carefull when including the roles make sure to add the owner
-    // because no roles are granted by default when using custom roles
-    if (roles) {
-      if (roles instanceof Object) {
-        this.#roles = { ...roles, ...this.#roles }
+  constructor(state?: RolesState) {
+    super(state)
+    if (state?.roles) {
+      if (state.roles instanceof Object) {
+        this.#roles = { ...state.roles }
       } else {
         throw new TypeError(`expected roles to be an object`)
       }
@@ -29,7 +29,10 @@ export default class Roles {
    *
    */
   get state(): {} {
-    return { roles: this.roles }
+    return {
+      ...super.state,
+      roles: this.roles
+    }
   }
 
   get roles(): {} {
@@ -50,7 +53,8 @@ export default class Roles {
    * @param {string} role role to give
    */
   #grantRole(address: address, role: string): void {
-    if (this.hasRole(address, role)) throw new Error(`${role} role already granted for ${address}`)
+    if (this.hasRole(address, role))
+      throw new Error(`${role} role already granted for ${address}`)
 
     this.#roles[role].push(address)
   }
@@ -62,8 +66,10 @@ export default class Roles {
    * @param {string} role role to evoke
    */
   #revokeRole(address: address, role: string) {
-    if (!this.hasRole(address, role)) throw new Error(`${role} role already revoked for ${address}`)
-    if (role === 'OWNER' && this.#roles[role].length === 1) throw new Error(`atleast one owner is needed!`)
+    if (!this.hasRole(address, role))
+      throw new Error(`${role} role already revoked for ${address}`)
+    if (role === 'OWNER' && this.#roles[role].length === 1)
+      throw new Error(`atleast one owner is needed!`)
 
     this.#roles[role].splice(this.#roles[role].indexOf(address))
   }
