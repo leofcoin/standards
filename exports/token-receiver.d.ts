@@ -1,6 +1,6 @@
 import { IPublicVoting } from './voting/interfaces/i-public-voting.js';
 import PublicVoting from './voting/public-voting.js';
-import { VotingState } from './voting/types.js';
+import { VotingState } from './interfaces.js';
 export interface TokenReceiverState extends VotingState {
     tokenToReceive: address;
     tokenReceiver: address;
@@ -19,7 +19,7 @@ export default class TokenReceiver extends PublicVoting implements IPublicVoting
         tokenAmountToReceive: bigint;
         voteType: "burn" | "transfer";
         votes: {
-            [id: string]: import("./voting/types.js").Vote;
+            [id: string]: import("./interfaces.js").Vote;
         };
         votingDisabled: boolean;
         votingDuration: number;

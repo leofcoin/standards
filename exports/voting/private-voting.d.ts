@@ -1,10 +1,10 @@
 import Meta from '../meta.js';
-import { PrivateVotingState, VoteResult, VoteView } from './types.js';
+import { PrivateVotingState, VoteResult, VoteView } from '../interfaces.js';
 export default class PrivateVoting extends Meta {
     #private;
     constructor(state: PrivateVotingState);
     get votes(): {
-        [id: string]: import("./types.js").Vote;
+        [id: string]: import("../interfaces.js").Vote;
     };
     get voters(): {
         [n: number]: string;

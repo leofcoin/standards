@@ -1,5 +1,5 @@
 import Meta from '../meta.js'
-import { VotingState, VoteResult } from './types.js'
+import { VotingState, VoteResult } from '../interfaces.js'
 
 /**
  * allows everybody that has a balance greater or equal to tokenAmountToReceive to vote

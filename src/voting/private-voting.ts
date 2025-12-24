@@ -4,7 +4,7 @@ import {
   VoteResult,
   VoteView,
   VotingState
-} from './types.js'
+} from '../interfaces.js'
 
 export default class PrivateVoting extends Meta {
   #voters: PrivateVotingState['voters']

@@ -1,6 +1,6 @@
 import { restoreApprovals, restoreBalances } from './helpers.js'
 import Roles from './roles.js'
-import { TokenState } from './types.js'
+import { TokenState } from './interfaces.js'
 
 export default class Token extends Roles {
   /**

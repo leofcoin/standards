@@ -1,5 +1,5 @@
 import Meta from '../meta.js';
-import { VotingState, VoteResult } from './types.js';
+import { VotingState, VoteResult } from '../interfaces.js';
 /**
  * allows everybody that has a balance greater or equal to tokenAmountToReceive to vote
  */
@@ -7,7 +7,7 @@ export default class PublicVoting extends Meta {
     #private;
     constructor(state: VotingState);
     get votes(): {
-        [id: string]: import("./types.js").Vote;
+        [id: string]: import("../interfaces.js").Vote;
     };
     get votingDuration(): number;
     get votingDisabled(): boolean;
@@ -16,7 +16,7 @@ export default class PublicVoting extends Meta {
      */
     get state(): {
         votes: {
-            [id: string]: import("./types.js").Vote;
+            [id: string]: import("../interfaces.js").Vote;
         };
         votingDisabled: boolean;
         votingDuration: number;

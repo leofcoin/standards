@@ -1,5 +1,5 @@
 import Roles from './roles.js';
-import { TokenState } from './types.js';
+import { TokenState } from './interfaces.js';
 export default class Token extends Roles {
     #private;
     constructor(name: string, symbol: string, decimals?: number, state?: TokenState);

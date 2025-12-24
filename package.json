@@ -8,40 +8,98 @@
       "import": "./exports/index.js",
       "types": "./exports/index.d.ts"
     },
-    "./token": {
-      "import": "./exports/token.js",
-      "types": "./exports/token.d.ts"
+    "./helpers": {
+      "import": "./exports/helpers.js",
+      "types": "./exports/helpers.d.ts"
+    },
+    "./helpers.js": {
+      "import": "./exports/helpers.js",
+      "types": "./exports/helpers.d.ts"
+    },
+    "./i-public-voting": {
+      "import": "./exports/i-public-voting.js",
+      "types": "./exports/voting/interfaces/i-public-voting.d.ts"
+    },
+    "./i-public-voting.js": {
+      "import": "./exports/i-public-voting.js",
+      "types": "./exports/voting/interfaces/i-public-voting.d.ts"
+    },
+    "./index.js": {
+      "import": "./exports/index.js",
+      "types": "./exports/index.d.ts"
+    },
+    "./interfaces": {
+      "import": "./exports/interfaces.js",
+      "types": "./exports/interfaces.d.ts"
+    },
+    "./interfaces.js": {
+      "import": "./exports/interfaces.js",
+      "types": "./exports/interfaces.d.ts"
+    },
+    "./meta": {
+      "import": "./exports/meta.js",
+      "types": "./exports/meta.d.ts"
+    },
+    "./meta.js": {
+      "import": "./exports/meta.js",
+      "types": "./exports/meta.d.ts"
+    },
+    "./private-voting": {
+      "import": "./exports/private-voting.js",
+      "types": "./exports/voting/private-voting.d.ts"
+    },
+    "./private-voting.js": {
+      "import": "./exports/private-voting.js",
+      "types": "./exports/voting/private-voting.d.ts"
+    },
+    "./public-voting": {
+      "import": "./exports/public-voting.js",
+      "types": "./exports/voting/interfaces/public-voting.d.ts"
+    },
+    "./public-voting.js": {
+      "import": "./exports/public-voting.js",
+      "types": "./exports/voting/interfaces/public-voting.d.ts"
     },
     "./roles": {
       "import": "./exports/roles.js",
       "types": "./exports/roles.d.ts"
     },
-    "./public-voting": {
-      "import": "./exports/public-voting.js",
-      "types": "./exports/public-voting.d.ts"
-    },
-    "./private-voting": {
-      "import": "./exports/private-voting.js",
-      "types": "./exports/private-voting.d.ts"
+    "./roles.js": {
+      "import": "./exports/roles.js",
+      "types": "./exports/roles.d.ts"
     },
     "./token-receiver": {
       "import": "./exports/token-receiver.js",
       "types": "./exports/token-receiver.d.ts"
     },
-    "./interfaces/i-public-voting": {
-      "import": "./exports/i-public-voting.js",
-      "types": "./exports/i-public-voting.d.ts"
+    "./token-receiver.js": {
+      "import": "./exports/token-receiver.js",
+      "types": "./exports/token-receiver.d.ts"
     },
-    "./helpers": {
-      "import": "./exports/helpers.js",
-      "types": "./exports/helpers.d.ts"
+    "./token": {
+      "import": "./exports/token.js",
+      "types": "./exports/token.d.ts"
     },
-    "./token.js": "./exports/token.js",
-    "./roles.js": "./exports/roles.js",
-    "./public-voting.js": "./exports/public-voting.js",
-    "./interfaces/i-public-voting.js": "./exports/i-public-voting.js",
-    "./private-voting.js": "./exports/private-voting.js",
-    "./helpers.js": "./exports/helpers.js"
+    "./token.js": {
+      "import": "./exports/token.js",
+      "types": "./exports/token.d.ts"
+    },
+    "./types": {
+      "import": "./exports/types.js",
+      "types": "./exports/voting/types.d.ts"
+    },
+    "./types.js": {
+      "import": "./exports/types.js",
+      "types": "./exports/voting/types.d.ts"
+    },
+    "./voting": {
+      "import": "./exports/voting.js",
+      "types": "./exports/voting.d.ts"
+    },
+    "./voting.js": {
+      "import": "./exports/voting.js",
+      "types": "./exports/voting.d.ts"
+    }
   },
   "scripts": {
     "build": "rollup -c",
@@ -62,6 +120,7 @@
     "@leofcoin/global-types": "^1.0.2",
     "@rollup/plugin-typescript": "^12.3.0",
     "rollup": "^4.54.0",
+    "rollup-plugin-auto-exports": "^1.1.1",
     "tslib": "^2.8.1"
   }
 }

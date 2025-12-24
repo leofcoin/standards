@@ -1,4 +1,4 @@
-import { MetaState } from './types.js'
+import { MetaState } from './interfaces.js'
 
 export default class Meta {
   #creator: address
