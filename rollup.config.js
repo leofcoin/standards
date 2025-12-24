@@ -18,8 +18,7 @@ export default [
       'src/voting/interfaces/i-public-voting.ts',
       'src/voting/private-voting.ts',
       'src/helpers.ts',
-      'src/token-receiver.ts',
-      'src/interfaces.ts'
+      'src/token-receiver.ts'
     ],
     output: {
       dir: './exports',
