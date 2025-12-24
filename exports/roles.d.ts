@@ -1,5 +1,9 @@
-import Meta from './meta.js';
-import { RolesState } from './interfaces.js';
+import Meta, { MetaState } from './meta.js';
+export interface RolesState extends MetaState {
+    roles: {
+        [index: string]: address[];
+    };
+}
 export default class Roles extends Meta {
     #private;
     constructor(state?: RolesState);

@@ -1,5 +1,16 @@
-import Roles from './roles.js';
-import { TokenState } from './interfaces.js';
+import Roles, { RolesState } from './roles.js';
+export interface TokenState extends RolesState {
+    holders: bigint;
+    balances: {
+        [address: address]: bigint;
+    };
+    approvals: {
+        [owner: address]: {
+            [operator: address]: bigint;
+        };
+    };
+    totalSupply: bigint;
+}
 export default class Token extends Roles {
     #private;
     constructor(name: string, symbol: string, decimals?: number, state?: TokenState);

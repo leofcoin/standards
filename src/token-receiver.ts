@@ -1,6 +1,5 @@
 import { IPublicVoting } from './voting/interfaces/i-public-voting.js'
-import PublicVoting from './voting/public-voting.js'
-import { VotingState } from './interfaces.js'
+import PublicVoting, { VotingState } from './voting/public-voting.js'
 
 export interface TokenReceiverState extends VotingState {
   tokenToReceive: address

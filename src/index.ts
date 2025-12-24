@@ -1,8 +1,19 @@
-export { default as Meta } from './meta.js'
-export { default as Roles } from './roles.js'
-export { default as Token } from './token.js'
-export { default as TokenReceiver } from './token-receiver.js'
-export { default as PublicVoting } from './voting/public-voting.js'
-export { default as PrivateVoting } from './voting/private-voting.js'
-export type * from './interfaces.js'
+export { default as Meta, type MetaState } from './meta.js'
+export { default as Roles, type RolesState } from './roles.js'
+export { default as Token, type TokenState } from './token.js'
+export {
+  default as TokenReceiver,
+  type TokenReceiverState
+} from './token-receiver.js'
+export {
+  default as PublicVoting,
+  type VotingState,
+  type VoteResult,
+  type Vote,
+  type VoteView
+} from './voting/public-voting.js'
+export {
+  default as PrivateVoting,
+  type PrivateVotingState
+} from './voting/private-voting.js'
 export * from './helpers.js'

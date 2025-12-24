@@ -1,5 +1,29 @@
-import Meta from '../meta.js'
-import { VotingState, VoteResult } from '../interfaces.js'
+import Meta, { MetaState } from '../meta.js'
+
+export interface VotingState extends MetaState {
+  votes: {
+    [id: string]: Vote
+  }
+  votingDisabled: boolean
+  votingDuration: number
+}
+
+export type VoteResult = 0 | 0.5 | 1
+
+export type Vote = {
+  title: string
+  method: string
+  args: any[]
+  description: string
+  endTime: EpochTimeStamp
+  results?: { [address: string]: VoteResult }
+  finished?: boolean
+  enoughVotes?: boolean
+}
+
+export interface VoteView extends Vote {
+  id: string
+}
 
 /**
  * allows everybody that has a balance greater or equal to tokenAmountToReceive to vote

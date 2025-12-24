@@ -1,4 +1,7 @@
-import { MetaState } from './interfaces.js'
+export interface MetaState {
+  creator: address
+  createdAt: bigint
+}
 
 export default class Meta {
   #creator: address

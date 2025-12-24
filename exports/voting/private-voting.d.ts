@@ -1,10 +1,35 @@
-import Meta from '../meta.js';
-import { PrivateVotingState, VoteResult, VoteView } from '../interfaces.js';
+import Meta, { MetaState } from '../meta.js';
+export interface VotingState extends MetaState {
+    votes: {
+        [id: string]: Vote;
+    };
+    votingDisabled: boolean;
+    votingDuration: number;
+}
+export interface PrivateVotingState extends VotingState {
+    voters: address[];
+}
+export type VoteResult = 0 | 0.5 | 1;
+export type Vote = {
+    title: string;
+    method: string;
+    args: any[];
+    description: string;
+    endTime: EpochTimeStamp;
+    results?: {
+        [address: string]: VoteResult;
+    };
+    finished?: boolean;
+    enoughVotes?: boolean;
+};
+export interface VoteView extends Vote {
+    id: string;
+}
 export default class PrivateVoting extends Meta {
     #private;
     constructor(state: PrivateVotingState);
     get votes(): {
-        [id: string]: import("../interfaces.js").Vote;
+        [id: string]: Vote;
     };
     get voters(): {
         [n: number]: string;
