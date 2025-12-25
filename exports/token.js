@@ -25,6 +25,7 @@ class Token extends Roles {
     #approvals = {};
     #decimals = 18;
     #totalSupply = 0n;
+    // #blacklist: { [address: string]: boolean } = {}
     constructor(name, symbol, decimals = 18, state) {
         if (!name)
             throw new Error(`name undefined`);
@@ -89,9 +90,16 @@ class Token extends Roles {
         if (!this.hasRole(msg.sender, 'BURN'))
             throw new Error('not allowed');
         this.#totalSupply = this.#totalSupply - amount;
+        this.#beforeTransfer(from, from, amount);
         this.#decreaseBalance(from, amount);
     }
     #beforeTransfer(from, to, amount) {
+        if (!from)
+            throw new Error('address undefined');
+        // if (this.#blacklist[from]) throw new Error('address blacklisted')
+        // if (this.#blacklist[to]) throw new Error('address blacklisted')
+        if (amount < 0n)
+            throw new Error('amount must be positive');
         if (!this.#balances[from] || this.#balances[from] < amount)
             throw new Error('amount exceeds balance');
     }
