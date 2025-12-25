@@ -1,5 +1,36 @@
 # @leofcoin/standards
 
+## 0.3.5
+
+### Changed
+
+- Removed types definitions from exports directory for cleaner package structure
+
+## 0.3.4
+
+### Changed
+
+- Removed unused interfaces.ts file
+- Updated rollup configuration
+
+## 0.3.3
+
+### Changed
+
+- Refactored type exports and moved interfaces to source files
+
+## 0.3.2
+
+### Changed
+
+- Refactored type imports to use new interfaces module
+
+## 0.3.1
+
+### Changed
+
+- Updated voting type definitions and dependencies
+
 ## 0.3.0
 
 ### Changed
