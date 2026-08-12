@@ -1,5 +1,3 @@
-import { chainTimestamp } from './helpers.js';
-
 class Meta {
     #creator;
     #createdAt;
@@ -10,7 +8,7 @@ class Meta {
         }
         else {
             this.#creator = msg.sender;
-            this.#createdAt = BigInt(chainTimestamp());
+            this.#createdAt = BigInt(Date.now());
         }
     }
     /**

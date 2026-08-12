@@ -1,5 +1,4 @@
 import Meta from './meta.js';
-import './helpers.js';
 
 class Roles extends Meta {
     /**

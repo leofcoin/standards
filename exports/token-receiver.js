@@ -1,5 +1,4 @@
 import PublicVoting from './public-voting.js';
-import { chainTimestamp } from './helpers.js';
 import './meta.js';
 
 class TokenReceiver extends PublicVoting {
@@ -110,21 +109,21 @@ class TokenReceiver extends PublicVoting {
         if (this.#voteType === 'transfer' && (await this.#balance()) > 0n)
             throw new Error('get tokens out first or they be lost forever');
         else {
-            this.createVote(`change the token amount to receive`, `set tokenAmountToReceive`, chainTimestamp() + this.votingDuration, '#changeVoteType', [type]);
+            this.createVote(`change the token amount to receive`, `set tokenAmountToReceive`, Date.now() + this.votingDuration, '#changeVoteType', [type]);
         }
     }
     getTokensOut(amount, receiver) {
         if (!this.#canVote())
             throw new Error('not a allowed');
         else {
-            this.createVote(`withdraw all tokens`, `withdraw all tokens to ${receiver}`, chainTimestamp() + this.votingDuration, '#getTokensOut', [amount, receiver]);
+            this.createVote(`withdraw all tokens`, `withdraw all tokens to ${receiver}`, Date.now() + this.votingDuration, '#getTokensOut', [amount, receiver]);
         }
     }
     changeTokenAmountToReceive() {
         if (!this.#canVote())
             throw new Error('not a allowed');
         else {
-            this.createVote(`change the token amount to receive`, `set tokenAmountToReceive`, chainTimestamp() + this.votingDuration, '#changeTokenAmountToReceive', []);
+            this.createVote(`change the token amount to receive`, `set tokenAmountToReceive`, Date.now() + this.votingDuration, '#changeTokenAmountToReceive', []);
         }
     }
     #balance() {
@@ -138,7 +137,7 @@ class TokenReceiver extends PublicVoting {
         if ((await this.#balance()) !== 0n && this.#voteType === 'transfer')
             throw new Error('get tokens out first or they be lost forever');
         else {
-            this.createVote(`change the token to receive`, `set tokenToReceive to a new address`, chainTimestamp() + this.votingDuration, '#changeTokenToReceive', []);
+            this.createVote(`change the token to receive`, `set tokenToReceive to a new address`, Date.now() + this.votingDuration, '#changeTokenToReceive', []);
         }
     }
 }
