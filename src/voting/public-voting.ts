@@ -1,5 +1,4 @@
 import Meta, { MetaState } from '../meta.js'
-import { chainTimestamp } from '../helpers.js'
 
 export interface VotingState extends MetaState {
   votes: {
@@ -134,7 +133,7 @@ export default class PublicVoting extends Meta {
     if (vote !== 0 && vote !== 0.5 && vote !== 1)
       throw new Error(`invalid vote value ${vote}`)
     if (!this.#votes[voteId]) throw new Error(`Nothing found for ${voteId}`)
-    const ended = chainTimestamp() > this.#votes[voteId].endTime
+    const ended = Date.now() > this.#votes[voteId].endTime
     if (ended && !this.#votes[voteId].finished) this.#endVoting(voteId)
     if (ended) throw new Error('voting already ended')
     if (!this.#canVote()) throw new Error(`Not allowed to vote`)
@@ -152,7 +151,7 @@ export default class PublicVoting extends Meta {
       this.createVote(
         `disable voting`,
         `Warning this disables all voting features forever`,
-        chainTimestamp() + this.#votingDuration,
+        Date.now() + this.#votingDuration,
         '#disableVoting',
         []
       )
@@ -161,7 +160,7 @@ export default class PublicVoting extends Meta {
 
   _sync() {
     for (const vote of this.inProgress) {
-      if (vote.endTime < chainTimestamp()) this.#endVoting(vote.id)
+      if (vote.endTime < Date.now()) this.#endVoting(vote.id)
     }
   }
 }
