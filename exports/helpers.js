@@ -16,5 +16,12 @@ const restoreApprovals = (approvals) => {
     }
     return _approvals;
 };
+/** Consensus time only. Before genesis the deterministic timestamp is zero. */
+const chainTimestamp = () => {
+    const timestamp = Number(typeof state === 'undefined' ? 0 : state?.lastBlock?.timestamp ?? 0);
+    if (!Number.isSafeInteger(timestamp) || timestamp < 0)
+        throw new Error('invalid chain timestamp');
+    return timestamp;
+};
 
-export { restoreApprovals, restoreBalances };
+export { chainTimestamp, restoreApprovals, restoreBalances };

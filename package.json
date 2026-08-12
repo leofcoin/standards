@@ -93,12 +93,12 @@
       "types": "./exports/voting/types.d.ts"
     },
     "./voting": {
-      "import": "./exports/voting.js",
-      "types": "./exports/voting.d.ts"
+      "import": "./exports/private-voting.js",
+      "types": "./exports/voting/private-voting.d.ts"
     },
     "./voting.js": {
-      "import": "./exports/voting.js",
-      "types": "./exports/voting.d.ts"
+      "import": "./exports/private-voting.js",
+      "types": "./exports/voting/private-voting.d.ts"
     }
   },
   "scripts": {

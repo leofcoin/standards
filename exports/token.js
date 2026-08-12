@@ -1,6 +1,6 @@
 import { restoreBalances, restoreApprovals } from './helpers.js';
 import Roles from './roles.js';
-import './meta-D7uruGOw.js';
+import './meta.js';
 
 class Token extends Roles {
     /**

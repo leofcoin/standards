@@ -12,6 +12,7 @@ export default [
   {
     input: [
       'src/index.ts',
+      'src/meta.ts',
       'src/token.ts',
       'src/roles.ts',
       'src/voting/public-voting.ts',

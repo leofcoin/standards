@@ -1,18 +1,24 @@
-import { M as Meta } from './meta-D7uruGOw.js';
+import Meta from './meta.js';
+import { chainTimestamp } from './helpers.js';
 
 class PrivateVoting extends Meta {
     #voters;
     #votes;
     #votingDisabled;
+    #voteNonce;
     constructor(state) {
         super(state);
         if (state) {
             this.#voters = state.voters;
             this.#votes = state.votes;
             this.#votingDisabled = state.votingDisabled;
+            this.#voteNonce = BigInt(state.voteNonce ?? Object.keys(state.votes ?? {}).length);
         }
         else {
             this.#voters = [msg.sender];
+            this.#votes = {};
+            this.#votingDisabled = false;
+            this.#voteNonce = 0n;
         }
     }
     get votes() {
@@ -32,7 +38,8 @@ class PrivateVoting extends Meta {
             ...super.state,
             voters: this.#voters,
             votes: this.#votes,
-            votingDisabled: this.#votingDisabled
+            votingDisabled: this.#votingDisabled,
+            voteNonce: this.#voteNonce
         };
     }
     get inProgress() {
@@ -52,7 +59,7 @@ class PrivateVoting extends Meta {
     createVote(title, description, endTime, method, args = []) {
         if (!this.canVote(msg.sender))
             throw new Error(`Not allowed to create a vote`);
-        const id = crypto.randomUUID();
+        const id = (++this.#voteNonce).toString();
         this.#votes[id] = {
             title,
             description,
@@ -81,7 +88,7 @@ class PrivateVoting extends Meta {
             throw new Error(`invalid vote value ${vote}`);
         if (!this.#votes[voteId])
             throw new Error(`Nothing found for ${voteId}`);
-        const ended = new Date().getTime() > this.#votes[voteId].endTime;
+        const ended = chainTimestamp() > this.#votes[voteId].endTime;
         if (ended && !this.#votes[voteId].finished)
             this.#endVoting(voteId);
         if (ended)
@@ -109,14 +116,14 @@ class PrivateVoting extends Meta {
         if (this.#voters.length === 1)
             this.#disableVoting();
         else {
-            this.createVote(`disable voting`, `Warning this disables all voting features forever`, new Date().getTime() + 172800000, '#disableVoting', []);
+            this.createVote(`disable voting`, `Warning this disables all voting features forever`, chainTimestamp() + 172800000, '#disableVoting', []);
         }
     }
     grantVotingPower(address, voteId) {
         if (this.#voters.length === 1 && this.canVote(msg.sender))
             this.#grantVotingPower(address);
         else {
-            this.createVote(`grant voting power to ${address}`, `Should we grant ${address} voting power?`, new Date().getTime() + 172800000, '#grantVotingPower', [address]);
+            this.createVote(`grant voting power to ${address}`, `Should we grant ${address} voting power?`, chainTimestamp() + 172800000, '#grantVotingPower', [address]);
         }
     }
     revokeVotingPower(address, voteId) {
@@ -129,12 +136,12 @@ class PrivateVoting extends Meta {
         if (this.#voters.length === 1)
             this.#revokeVotingPower(address);
         else {
-            this.createVote(`revoke voting power for ${address}`, `Should we revoke ${address} it's voting power?`, new Date().getTime() + 172800000, '#revokeVotingPower', [address]);
+            this.createVote(`revoke voting power for ${address}`, `Should we revoke ${address} it's voting power?`, chainTimestamp() + 172800000, '#revokeVotingPower', [address]);
         }
     }
     sync() {
         for (const vote of this.inProgress) {
-            if (vote.endTime < new Date().getTime())
+            if (vote.endTime < chainTimestamp())
                 this.#endVoting(vote.id);
         }
     }

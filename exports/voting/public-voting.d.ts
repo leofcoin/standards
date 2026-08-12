@@ -5,6 +5,7 @@ export interface VotingState extends MetaState {
     };
     votingDisabled: boolean;
     votingDuration: number;
+    voteNonce: bigint;
 }
 export type VoteResult = 0 | 0.5 | 1;
 export type Vote = {
@@ -42,6 +43,7 @@ export default class PublicVoting extends Meta {
         };
         votingDisabled: boolean;
         votingDuration: number;
+        voteNonce: bigint;
     };
     get inProgress(): {
         id: string;

@@ -1,4 +1,5 @@
 import Meta, { MetaState } from '../meta.js'
+import { chainTimestamp } from '../helpers.js'
 
 export interface VotingState extends MetaState {
   votes: {
@@ -6,6 +7,7 @@ export interface VotingState extends MetaState {
   }
   votingDisabled: boolean
   votingDuration: number
+  voteNonce: bigint
 }
 
 export type VoteResult = 0 | 0.5 | 1
@@ -32,12 +34,18 @@ export default class PublicVoting extends Meta {
   #votes: VotingState['votes']
   #votingDisabled: boolean
   #votingDuration: number = 172800000
+  #voteNonce: bigint
 
   constructor(state: VotingState) {
     super(state)
     if (state) {
       this.#votes = state.votes
       this.#votingDisabled = state.votingDisabled
+      this.#voteNonce = BigInt(state.voteNonce ?? Object.keys(state.votes ?? {}).length)
+    } else {
+      this.#votes = {}
+      this.#votingDisabled = false
+      this.#voteNonce = 0n
     }
   }
 
@@ -61,7 +69,8 @@ export default class PublicVoting extends Meta {
       ...super.state,
       votes: this.#votes,
       votingDisabled: this.#votingDisabled,
-      votingDuration: this.#votingDuration
+      votingDuration: this.#votingDuration,
+      voteNonce: this.#voteNonce
     }
   }
 
@@ -88,7 +97,7 @@ export default class PublicVoting extends Meta {
     args: any[] = []
   ) {
     if (!this.#canVote()) throw new Error(`Not allowed to create a vote`)
-    const id = crypto.randomUUID()
+    const id = (++this.#voteNonce).toString()
     this.#votes[id] = {
       title,
       description,
@@ -125,7 +134,7 @@ export default class PublicVoting extends Meta {
     if (vote !== 0 && vote !== 0.5 && vote !== 1)
       throw new Error(`invalid vote value ${vote}`)
     if (!this.#votes[voteId]) throw new Error(`Nothing found for ${voteId}`)
-    const ended = new Date().getTime() > this.#votes[voteId].endTime
+    const ended = chainTimestamp() > this.#votes[voteId].endTime
     if (ended && !this.#votes[voteId].finished) this.#endVoting(voteId)
     if (ended) throw new Error('voting already ended')
     if (!this.#canVote()) throw new Error(`Not allowed to vote`)
@@ -143,7 +152,7 @@ export default class PublicVoting extends Meta {
       this.createVote(
         `disable voting`,
         `Warning this disables all voting features forever`,
-        new Date().getTime() + this.#votingDuration,
+        chainTimestamp() + this.#votingDuration,
         '#disableVoting',
         []
       )
@@ -152,7 +161,7 @@ export default class PublicVoting extends Meta {
 
   _sync() {
     for (const vote of this.inProgress) {
-      if (vote.endTime < new Date().getTime()) this.#endVoting(vote.id)
+      if (vote.endTime < chainTimestamp()) this.#endVoting(vote.id)
     }
   }
 }

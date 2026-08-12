@@ -2,6 +2,8 @@ import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import Voting from './../exports/public-voting.js'
 
+globalThis.state = { lastBlock: { timestamp: Date.now() } }
+
 test('PublicVoting - constructor initializes with correct state', () => {
   const state = {
     votes: {},
