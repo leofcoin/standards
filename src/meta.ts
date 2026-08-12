@@ -5,7 +5,7 @@ export interface MetaState {
 
 export default class Meta {
   #creator: address
-  #createdAt: bigint = BigInt(Date.now())
+  #createdAt: bigint
 
   constructor(state?: MetaState) {
     if (state) {
@@ -13,7 +13,7 @@ export default class Meta {
       this.#createdAt = state.createdAt
     } else {
       this.#creator = msg.sender
-      this.#createdAt = BigInt(Date.now())
+      this.#createdAt = BigInt(chainTimestamp())
     }
   }
 
@@ -32,3 +32,4 @@ export default class Meta {
     return this.#createdAt
   }
 }
+import { chainTimestamp } from './helpers.js'

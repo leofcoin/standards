@@ -1,4 +1,5 @@
 import Meta, { MetaState } from '../meta.js'
+import { chainTimestamp } from '../helpers.js'
 
 export interface VotingState extends MetaState {
   votes: {
@@ -6,6 +7,7 @@ export interface VotingState extends MetaState {
   }
   votingDisabled: boolean
   votingDuration: number
+  voteNonce: bigint
 }
 
 export interface PrivateVotingState extends VotingState {
@@ -33,6 +35,7 @@ export default class PrivateVoting extends Meta {
   #voters: PrivateVotingState['voters']
   #votes: PrivateVotingState['votes']
   #votingDisabled: boolean
+  #voteNonce: bigint
 
   constructor(state: PrivateVotingState) {
     super(state)
@@ -40,8 +43,12 @@ export default class PrivateVoting extends Meta {
       this.#voters = state.voters
       this.#votes = state.votes
       this.#votingDisabled = state.votingDisabled
+      this.#voteNonce = BigInt(state.voteNonce ?? Object.keys(state.votes ?? {}).length)
     } else {
       this.#voters = [msg.sender]
+      this.#votes = {}
+      this.#votingDisabled = false
+      this.#voteNonce = 0n
     }
   }
 
@@ -65,7 +72,8 @@ export default class PrivateVoting extends Meta {
       ...super.state,
       voters: this.#voters,
       votes: this.#votes,
-      votingDisabled: this.#votingDisabled
+      votingDisabled: this.#votingDisabled,
+      voteNonce: this.#voteNonce
     }
   }
 
@@ -93,7 +101,7 @@ export default class PrivateVoting extends Meta {
   ) {
     if (!this.canVote(msg.sender))
       throw new Error(`Not allowed to create a vote`)
-    const id = crypto.randomUUID()
+    const id = (++this.#voteNonce).toString()
     this.#votes[id] = {
       title,
       description,
@@ -129,7 +137,7 @@ export default class PrivateVoting extends Meta {
     if (vote !== 0 && vote !== 0.5 && vote !== 1)
       throw new Error(`invalid vote value ${vote}`)
     if (!this.#votes[voteId]) throw new Error(`Nothing found for ${voteId}`)
-    const ended = new Date().getTime() > this.#votes[voteId].endTime
+    const ended = chainTimestamp() > this.#votes[voteId].endTime
     if (ended && !this.#votes[voteId].finished) this.#endVoting(voteId)
     if (ended) throw new Error('voting already ended')
     if (!this.canVote(msg.sender)) throw new Error(`Not allowed to vote`)
@@ -159,7 +167,7 @@ export default class PrivateVoting extends Meta {
       this.createVote(
         `disable voting`,
         `Warning this disables all voting features forever`,
-        new Date().getTime() + 172800000,
+        chainTimestamp() + 172800000,
         '#disableVoting',
         []
       )
@@ -173,7 +181,7 @@ export default class PrivateVoting extends Meta {
       this.createVote(
         `grant voting power to ${address}`,
         `Should we grant ${address} voting power?`,
-        new Date().getTime() + 172800000,
+        chainTimestamp() + 172800000,
         '#grantVotingPower',
         [address]
       )
@@ -195,7 +203,7 @@ export default class PrivateVoting extends Meta {
       this.createVote(
         `revoke voting power for ${address}`,
         `Should we revoke ${address} it's voting power?`,
-        new Date().getTime() + 172800000,
+        chainTimestamp() + 172800000,
         '#revokeVotingPower',
         [address]
       )
@@ -204,7 +212,7 @@ export default class PrivateVoting extends Meta {
 
   sync() {
     for (const vote of this.inProgress) {
-      if (vote.endTime < new Date().getTime()) this.#endVoting(vote.id)
+      if (vote.endTime < chainTimestamp()) this.#endVoting(vote.id)
     }
   }
 }

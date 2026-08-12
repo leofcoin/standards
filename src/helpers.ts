@@ -1,3 +1,5 @@
+declare const state: { lastBlock?: { timestamp?: number } } | undefined
+
 // when state is stored it get encoded as a string to  so we need to reformat balances back to BigInts
 export const restoreBalances = (balances) => {
   const _balances = {}
@@ -16,4 +18,11 @@ export const restoreApprovals = (approvals) => {
     }
   }
   return _approvals
+}
+
+/** Consensus time only. Before genesis the deterministic timestamp is zero. */
+export const chainTimestamp = (): number => {
+  const timestamp = Number(typeof state === 'undefined' ? 0 : state?.lastBlock?.timestamp ?? 0)
+  if (!Number.isSafeInteger(timestamp) || timestamp < 0) throw new Error('invalid chain timestamp')
+  return timestamp
 }

@@ -1,4 +1,5 @@
-import { M as Meta } from './meta-D7uruGOw.js';
+import Meta from './meta.js';
+import { chainTimestamp } from './helpers.js';
 
 /**
  * allows everybody that has a balance greater or equal to tokenAmountToReceive to vote
@@ -7,11 +8,18 @@ class PublicVoting extends Meta {
     #votes;
     #votingDisabled;
     #votingDuration = 172800000;
+    #voteNonce;
     constructor(state) {
         super(state);
         if (state) {
             this.#votes = state.votes;
             this.#votingDisabled = state.votingDisabled;
+            this.#voteNonce = BigInt(state.voteNonce ?? Object.keys(state.votes ?? {}).length);
+        }
+        else {
+            this.#votes = {};
+            this.#votingDisabled = false;
+            this.#voteNonce = 0n;
         }
     }
     get votes() {
@@ -31,7 +39,8 @@ class PublicVoting extends Meta {
             ...super.state,
             votes: this.#votes,
             votingDisabled: this.#votingDisabled,
-            votingDuration: this.#votingDuration
+            votingDuration: this.#votingDuration,
+            voteNonce: this.#voteNonce
         };
     }
     get inProgress() {
@@ -51,7 +60,7 @@ class PublicVoting extends Meta {
     createVote(title, description, endTime, method, args = []) {
         if (!this.#canVote())
             throw new Error(`Not allowed to create a vote`);
-        const id = crypto.randomUUID();
+        const id = (++this.#voteNonce).toString();
         this.#votes[id] = {
             title,
             description,
@@ -81,7 +90,7 @@ class PublicVoting extends Meta {
             throw new Error(`invalid vote value ${vote}`);
         if (!this.#votes[voteId])
             throw new Error(`Nothing found for ${voteId}`);
-        const ended = new Date().getTime() > this.#votes[voteId].endTime;
+        const ended = chainTimestamp() > this.#votes[voteId].endTime;
         if (ended && !this.#votes[voteId].finished)
             this.#endVoting(voteId);
         if (ended)
@@ -98,12 +107,12 @@ class PublicVoting extends Meta {
         if (!this.#canVote())
             throw new Error('not a allowed');
         else {
-            this.createVote(`disable voting`, `Warning this disables all voting features forever`, new Date().getTime() + this.#votingDuration, '#disableVoting', []);
+            this.createVote(`disable voting`, `Warning this disables all voting features forever`, chainTimestamp() + this.#votingDuration, '#disableVoting', []);
         }
     }
     _sync() {
         for (const vote of this.inProgress) {
-            if (vote.endTime < new Date().getTime())
+            if (vote.endTime < chainTimestamp())
                 this.#endVoting(vote.id);
         }
     }

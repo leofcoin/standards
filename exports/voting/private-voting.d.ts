@@ -5,6 +5,7 @@ export interface VotingState extends MetaState {
     };
     votingDisabled: boolean;
     votingDuration: number;
+    voteNonce: bigint;
 }
 export interface PrivateVotingState extends VotingState {
     voters: address[];

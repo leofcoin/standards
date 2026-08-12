@@ -22,6 +22,7 @@ export default class TokenReceiver extends PublicVoting implements IPublicVoting
         };
         votingDisabled: boolean;
         votingDuration: number;
+        voteNonce: bigint;
     };
     /**
      * check if sender can pay

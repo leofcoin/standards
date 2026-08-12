@@ -1,5 +1,6 @@
 import { IPublicVoting } from './voting/interfaces/i-public-voting.js'
 import PublicVoting, { VotingState } from './voting/public-voting.js'
+import { chainTimestamp } from './helpers.js'
 
 export interface TokenReceiverState extends VotingState {
   tokenToReceive: address
@@ -139,7 +140,7 @@ export default class TokenReceiver
       this.createVote(
         `change the token amount to receive`,
         `set tokenAmountToReceive`,
-        new Date().getTime() + this.votingDuration,
+        chainTimestamp() + this.votingDuration,
         '#changeVoteType',
         [type]
       )
@@ -152,7 +153,7 @@ export default class TokenReceiver
       this.createVote(
         `withdraw all tokens`,
         `withdraw all tokens to ${receiver}`,
-        new Date().getTime() + this.votingDuration,
+        chainTimestamp() + this.votingDuration,
         '#getTokensOut',
         [amount, receiver]
       )
@@ -165,7 +166,7 @@ export default class TokenReceiver
       this.createVote(
         `change the token amount to receive`,
         `set tokenAmountToReceive`,
-        new Date().getTime() + this.votingDuration,
+        chainTimestamp() + this.votingDuration,
         '#changeTokenAmountToReceive',
         []
       )
@@ -186,7 +187,7 @@ export default class TokenReceiver
       this.createVote(
         `change the token to receive`,
         `set tokenToReceive to a new address`,
-        new Date().getTime() + this.votingDuration,
+        chainTimestamp() + this.votingDuration,
         '#changeTokenToReceive',
         []
       )

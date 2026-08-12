@@ -1,6 +1,8 @@
+import { chainTimestamp } from './helpers.js';
+
 class Meta {
     #creator;
-    #createdAt = BigInt(Date.now());
+    #createdAt;
     constructor(state) {
         if (state) {
             this.#creator = state.creator;
@@ -8,7 +10,7 @@ class Meta {
         }
         else {
             this.#creator = msg.sender;
-            this.#createdAt = BigInt(Date.now());
+            this.#createdAt = BigInt(chainTimestamp());
         }
     }
     /**
@@ -25,4 +27,4 @@ class Meta {
     }
 }
 
-export { Meta as M };
+export { Meta as default };
