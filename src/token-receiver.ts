@@ -139,7 +139,7 @@ export default class TokenReceiver
       this.createVote(
         `change the token amount to receive`,
         `set tokenAmountToReceive`,
-        new Date().getTime() + this.votingDuration,
+        Date.now() + this.votingDuration,
         '#changeVoteType',
         [type]
       )
@@ -152,7 +152,7 @@ export default class TokenReceiver
       this.createVote(
         `withdraw all tokens`,
         `withdraw all tokens to ${receiver}`,
-        new Date().getTime() + this.votingDuration,
+        Date.now() + this.votingDuration,
         '#getTokensOut',
         [amount, receiver]
       )
@@ -165,7 +165,7 @@ export default class TokenReceiver
       this.createVote(
         `change the token amount to receive`,
         `set tokenAmountToReceive`,
-        new Date().getTime() + this.votingDuration,
+        Date.now() + this.votingDuration,
         '#changeTokenAmountToReceive',
         []
       )
@@ -186,7 +186,7 @@ export default class TokenReceiver
       this.createVote(
         `change the token to receive`,
         `set tokenToReceive to a new address`,
-        new Date().getTime() + this.votingDuration,
+        Date.now() + this.votingDuration,
         '#changeTokenToReceive',
         []
       )

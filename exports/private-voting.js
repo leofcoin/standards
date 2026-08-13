@@ -81,7 +81,7 @@ class PrivateVoting extends Meta {
             throw new Error(`invalid vote value ${vote}`);
         if (!this.#votes[voteId])
             throw new Error(`Nothing found for ${voteId}`);
-        const ended = new Date().getTime() > this.#votes[voteId].endTime;
+        const ended = Date.now() > this.#votes[voteId].endTime;
         if (ended && !this.#votes[voteId].finished)
             this.#endVoting(voteId);
         if (ended)
@@ -109,14 +109,14 @@ class PrivateVoting extends Meta {
         if (this.#voters.length === 1)
             this.#disableVoting();
         else {
-            this.createVote(`disable voting`, `Warning this disables all voting features forever`, new Date().getTime() + 172800000, '#disableVoting', []);
+            this.createVote(`disable voting`, `Warning this disables all voting features forever`, Date.now() + 172800000, '#disableVoting', []);
         }
     }
     grantVotingPower(address, voteId) {
         if (this.#voters.length === 1 && this.canVote(msg.sender))
             this.#grantVotingPower(address);
         else {
-            this.createVote(`grant voting power to ${address}`, `Should we grant ${address} voting power?`, new Date().getTime() + 172800000, '#grantVotingPower', [address]);
+            this.createVote(`grant voting power to ${address}`, `Should we grant ${address} voting power?`, Date.now() + 172800000, '#grantVotingPower', [address]);
         }
     }
     revokeVotingPower(address, voteId) {
@@ -129,12 +129,12 @@ class PrivateVoting extends Meta {
         if (this.#voters.length === 1)
             this.#revokeVotingPower(address);
         else {
-            this.createVote(`revoke voting power for ${address}`, `Should we revoke ${address} it's voting power?`, new Date().getTime() + 172800000, '#revokeVotingPower', [address]);
+            this.createVote(`revoke voting power for ${address}`, `Should we revoke ${address} it's voting power?`, Date.now() + 172800000, '#revokeVotingPower', [address]);
         }
     }
     sync() {
         for (const vote of this.inProgress) {
-            if (vote.endTime < new Date().getTime())
+            if (vote.endTime < Date.now())
                 this.#endVoting(vote.id);
         }
     }

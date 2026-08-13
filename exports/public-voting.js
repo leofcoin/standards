@@ -81,7 +81,7 @@ class PublicVoting extends Meta {
             throw new Error(`invalid vote value ${vote}`);
         if (!this.#votes[voteId])
             throw new Error(`Nothing found for ${voteId}`);
-        const ended = new Date().getTime() > this.#votes[voteId].endTime;
+        const ended = Date.now() > this.#votes[voteId].endTime;
         if (ended && !this.#votes[voteId].finished)
             this.#endVoting(voteId);
         if (ended)
@@ -98,12 +98,12 @@ class PublicVoting extends Meta {
         if (!this.#canVote())
             throw new Error('not a allowed');
         else {
-            this.createVote(`disable voting`, `Warning this disables all voting features forever`, new Date().getTime() + this.#votingDuration, '#disableVoting', []);
+            this.createVote(`disable voting`, `Warning this disables all voting features forever`, Date.now() + this.#votingDuration, '#disableVoting', []);
         }
     }
     _sync() {
         for (const vote of this.inProgress) {
-            if (vote.endTime < new Date().getTime())
+            if (vote.endTime < Date.now())
                 this.#endVoting(vote.id);
         }
     }
